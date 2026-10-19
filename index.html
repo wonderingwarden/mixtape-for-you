@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mixtape for You</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Caveat:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=Indie+Flower&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--accent:#7b9ee8;--accent-light:#b8cfe8;--logo-color:#111;--logo-em-opacity:1}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#b8cfe8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-bottom:60px;transition:background .5s}
+/* NAV */
+.nav{width:100%;background:#fff;padding:13px 0 11px;text-align:center;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,0.09);display:flex;justify-content:center;align-items:center;transition:border-color .4s}
+.nav-logo{font-family:'Caveat',cursive;font-size:1.9rem;color:#111;font-weight:700;letter-spacing:.01em}
+.nav-logo em{color:var(--accent);font-style:italic;font-size:1.4rem;font-weight:600;transition:color .4s;opacity:var(--logo-em-opacity,1)}
+/* STEPS */
+.steps{display:flex;align-items:center;margin:26px 0 4px;justify-content:center;width:100%;max-width:500px;padding:0 16px}
+.sd{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,0.7);background:rgba(255,255,255,0.25);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5);transition:all .35s;flex-shrink:0}
+.sd.active{border-color:#fff;background:rgba(255,255,255,0.72);box-shadow:0 0 0 4px rgba(255,255,255,0.35);color:#111;text-shadow:none;font-weight:800}
+.sd.done{background:#3cb371;border-color:#3cb371;color:#fff;font-size:1rem;text-shadow:none}
+.sd.done .sdn{display:none}
+.sd.done::after{content:'✓'}
+.sl{width:52px;height:2px;background:rgba(255,255,255,0.3);transition:background .35s;flex-shrink:0}
+.sl.done{background:#3cb371}
+/* PILL LABELS — always readable on any background */
+.stitle{font-family:'Press Start 2P',monospace;font-size:.66rem;letter-spacing:.1em;color:#fff;text-align:center;margin:14px 0 20px;background:rgba(0,0,0,0.52);display:inline-block;padding:9px 20px;border-radius:20px;text-shadow:0 1px 4px rgba(0,0,0,0.7);box-shadow:0 2px 10px rgba(0,0,0,0.2)}
+.theme-name{font-family:'Press Start 2P',monospace;font-size:.5rem;letter-spacing:.06em;margin-bottom:20px;background:rgba(0,0,0,0.48);color:#fff;padding:5px 14px;border-radius:10px;display:inline-block;text-shadow:0 1px 3px rgba(0,0,0,0.6)}
+.cass-face-label{font-family:'Press Start 2P',monospace;font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;margin-top:5px;background:rgba(0,0,0,0.48);color:#fff;padding:4px 10px;border-radius:8px;text-shadow:0 1px 2px rgba(0,0,0,0.6)}
+.slimit{font-family:'Press Start 2P',monospace;font-size:.56rem;letter-spacing:.05em;margin-bottom:10px;background:rgba(0,0,0,0.48);color:#fff;padding:5px 14px;border-radius:8px;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+.slim{font-size:.56rem;font-family:'Press Start 2P',monospace;letter-spacing:.05em;margin-bottom:12px;text-align:center;background:rgba(0,0,0,0.48);color:#fff;padding:5px 14px;border-radius:8px;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+.sp-hint{font-size:.75rem;color:#fff;text-align:center;margin-bottom:12px;line-height:1.8;background:rgba(0,0,0,0.4);padding:7px 16px;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:500}
+.done-badge{font-family:'Press Start 2P',monospace;font-size:.58rem;letter-spacing:.08em;margin:20px 0 14px;text-align:center;background:rgba(0,0,0,0.65);color:#fff;padding:10px 24px;border-radius:14px;text-shadow:0 1px 4px rgba(0,0,0,0.8);box-shadow:0 2px 12px rgba(0,0,0,0.3)}
+.sticker-hint{font-family:'Press Start 2P',monospace;font-size:.38rem;letter-spacing:.06em;text-align:center;margin-bottom:10px;background:rgba(0,0,0,0.55);color:#fff;padding:6px 14px;border-radius:8px;line-height:2.4;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.footer{margin-top:28px;font-size:.78rem;color:#fff;text-align:center;background:rgba(0,0,0,0.38);padding:7px 20px;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:500}
+.ldmsg{text-align:center;padding:14px;color:#444;font-size:.88rem;font-weight:500}
+/* CARD */
+.card{width:100%;max-width:520px;padding:0 16px;display:flex;flex-direction:column;align-items:center}
+.cass-duo{width:100%;max-width:460px;display:flex;gap:12px;align-items:flex-start;margin-bottom:18px}
+.cass-duo-side{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.cass-duo-side svg{width:100%;height:auto;display:block;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.25))}
+/* SWATCHES */
+.swatches{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;max-width:480px}
+.swatch{width:44px;height:44px;border-radius:50%;cursor:pointer;border:3px solid rgba(255,255,255,0.6);transition:transform .22s,box-shadow .22s;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,0.15)}
+.swatch:hover{transform:scale(1.1)}
+.swatch.sel{transform:scale(1.18);box-shadow:0 0 0 3px #fff,0 0 0 6px rgba(0,0,0,0.5);outline:none}
+/* STICKER GRID */
+.sgrid{background:rgba(255,255,255,0.94);border-radius:16px;padding:14px;width:100%;max-width:480px;margin-bottom:16px;max-height:420px;overflow-y:auto;box-shadow:0 4px 18px rgba(0,0,0,0.12)}
+.sgrid::-webkit-scrollbar{width:4px}
+.sgrid::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
+.scat-label{font-family:'Press Start 2P',monospace;font-size:.42rem;letter-spacing:.1em;color:#777;text-transform:uppercase;margin:10px 0 6px;padding-left:2px}
+.scat-label:first-child{margin-top:0}
+.scat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px}
+.spick{background:#fff;border-radius:10px;padding:8px 2px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:2px solid #eee;transition:all .18s;position:relative;font-size:1.4rem;line-height:1;min-height:52px;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.spick:hover{transform:scale(1.08);border-color:#aaa;box-shadow:0 3px 10px rgba(0,0,0,0.12)}
+.spick.sel{border-color:#7b9ee8;background:#f0f4ff}
+.spick .ck{position:absolute;top:2px;right:2px;background:#7b9ee8;color:#fff;border-radius:50%;width:16px;height:16px;font-size:.5rem;font-weight:700;display:none;align-items:center;justify-content:center}
+.spick.sel .ck{display:flex}
+.spick small{font-size:.44rem;color:#999;font-family:'DM Sans',sans-serif;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* SEARCH */
+.sbar{width:100%;max-width:440px;background:rgba(255,255,255,0.97);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;border:2px solid rgba(255,255,255,0.9);margin-bottom:10px;transition:border-color .2s,box-shadow .2s;box-shadow:0 3px 14px rgba(0,0,0,0.12)}
+.sbar:focus-within{border-color:var(--accent);background:#fff}
+.sbar input{flex:1;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.95rem;color:#111;background:transparent;font-weight:500}
+.sbar input::placeholder{color:#bbb}
+.sbar button{background:none;border:none;cursor:pointer;font-size:1.1rem;color:#888;padding:0;line-height:1}
+.sresults{width:100%;max-width:440px;display:flex;flex-direction:column;gap:5px;margin-bottom:6px}
+.sitem{background:rgba(255,255,255,0.96);border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:10px;border:2px solid transparent;transition:all .18s;box-shadow:0 1px 5px rgba(0,0,0,0.08)}
+.sitem:hover{border-color:#ddd;background:#fff}
+.sitem.added{border-color:#3cb371;background:#fff}
+.sitem img,.sitem .sart{width:36px;height:36px;border-radius:6px;object-fit:cover;background:#eee;flex-shrink:0}
+.sitem .sinfo{flex:1;min-width:0}
+.sitem .sname{font-weight:600;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#111}
+.sitem .sartist{font-size:.72rem;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.sitem .sadd{width:28px;height:28px;border-radius:50%;border:2px solid #ddd;background:none;font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;color:#888;font-weight:700}
+.sitem.added .sadd{background:#3cb371;border-color:#3cb371;color:#fff}
+.sitem .sprev{width:28px;height:28px;border-radius:50%;border:2px solid #ddd;background:none;font-size:.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;color:#888;margin-right:2px}
+.sitem .sprev:hover{background:#f0f0f0;border-color:#aaa}
+/* ADDED CHIPS */
+.alist{width:100%;max-width:440px;margin-bottom:6px}
+.achip{background:rgba(255,255,255,0.96);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;margin-bottom:5px;border:2px solid #d0ecd8;box-shadow:0 1px 4px rgba(0,0,0,0.07)}
+.achip img,.achip .aart{width:28px;height:28px;border-radius:4px;object-fit:cover;background:#eee;flex-shrink:0}
+.achip .atitle{flex:1;font-size:.84rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#111}
+.achip .aartist{font-size:.7rem;color:#555}
+.achip .arm{background:none;border:none;cursor:pointer;color:#bbb;font-size:1rem;transition:color .2s;flex-shrink:0}
+.achip .arm:hover{color:#e55}
+/* RECIP ROW */
+.recip-row{width:100%;max-width:440px;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.recip-row label{font-family:'Press Start 2P',monospace;font-size:.46rem;white-space:nowrap;letter-spacing:.06em;background:rgba(0,0,0,0.48);color:#fff;padding:6px 10px;border-radius:6px;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+.recip-row input{flex:1;background:rgba(255,255,255,0.96);border:2px solid rgba(255,255,255,0.8);border-radius:10px;padding:10px 14px;font-family:'Caveat',cursive;font-size:1.2rem;color:#111;outline:none;transition:border-color .2s;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.recip-row input:focus{border-color:var(--accent);background:#fff}
+.recip-row input::placeholder{color:#bbb;font-weight:400}
+/* NOTEBOOK NOTE EDITOR */
+.notec{width:100%;max-width:480px;background:#fffef8;border-radius:4px 14px 14px 4px;box-shadow:0 6px 28px rgba(0,0,0,0.16),0 1px 0 rgba(0,0,0,0.06);position:relative;border-left:7px solid var(--accent)}
+.notec::after{content:'';position:absolute;top:50px;left:0;right:0;bottom:0;background:repeating-linear-gradient(to bottom,transparent,transparent 31px,rgba(90,140,230,0.15) 31px,rgba(90,140,230,0.15) 32px);pointer-events:none;z-index:1}
+.notec::before{content:'';position:absolute;left:50px;top:50px;bottom:0;width:1.5px;background:rgba(220,70,70,0.28);pointer-events:none;z-index:2}
+.note-toolbar{display:flex;align-items:center;gap:4px;padding:8px 10px;background:rgba(248,248,252,0.99);border-bottom:1px solid #e8e8f0;flex-wrap:wrap;position:relative;z-index:6;border-radius:0 14px 0 0}
+.ntool{background:#fff;border:1.5px solid #e0e0e8;border-radius:6px;padding:4px 9px;font-size:.82rem;cursor:pointer;color:#333;transition:all .15s;line-height:1;min-width:28px;font-family:'DM Sans',sans-serif;font-weight:600}
+.ntool:hover{background:#eef2ff;border-color:#7b9ee8;color:#111}
+.ntool:active{background:#dde8ff}
+.ntool-select{background:#fff;border:1.5px solid #e0e0e8;border-radius:6px;padding:4px 6px;font-size:.78rem;cursor:pointer;color:#333;outline:none;height:28px;font-weight:500}
+.ntool-select:focus{border-color:#7b9ee8}
+.ntool-sep{width:1px;height:20px;background:#e0e0e8;margin:0 2px;flex-shrink:0}
+.ntool-color{width:28px;height:28px;padding:2px;border:1.5px solid #e0e0e8;border-radius:6px;cursor:pointer;background:none}
+.ntool-clear{color:#ccc;border-color:#f0dde0;margin-left:auto}
+.ntool-clear:hover{color:#e55;border-color:#e55;background:#fff5f5}
+/* Hole punches */
+.nholes{position:absolute;left:-4px;top:68px;display:flex;flex-direction:column;gap:34px;z-index:6}
+.nhole{width:16px;height:16px;border-radius:50%;background:#e8e2d4;border:2px solid rgba(0,0,0,0.1);box-shadow:inset 0 1px 3px rgba(0,0,0,0.18)}
+/* Writing area */
+.ntextarea{width:100%;min-height:192px;border:none;outline:none;font-family:'Caveat',cursive;font-size:1.15rem;color:#000000;line-height:32px;padding:8px 18px 18px 64px;background:transparent;position:relative;z-index:5;word-break:break-word;caret-color:var(--accent);-webkit-user-select:text;user-select:text}
+.ntextarea:empty::before{content:attr(data-placeholder);color:rgba(0,0,0,0.25);pointer-events:none;font-style:italic;font-weight:400;position:relative;z-index:5;text-shadow:none}
+.ntextarea ul{margin-left:1.2em;list-style:disc}
+.ntextarea ol{margin-left:1.2em;list-style:decimal}
+.ntextarea font[color]{text-shadow:0 0 4px rgba(255,255,255,1),0 0 8px rgba(255,255,255,0.8),0 1px 3px rgba(255,255,255,0.6)}
+.ncount{text-align:right;font-size:.66rem;color:#c0b8a8;padding:4px 18px 12px;position:relative;z-index:6;font-family:'DM Sans',sans-serif;font-weight:500}
+.ntextarea ::selection{background:rgba(123,158,232,0.35)}
+.ntextarea:focus{outline:none}
+/* NAV BUTTONS */
+.navbtns{display:flex;gap:10px;margin-top:16px;width:100%;max-width:440px}
+.btn{flex:1;padding:14px 0;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .18s;letter-spacing:.02em;border:none}
+.btn-back{background:rgba(255,255,255,0.92);color:#111;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
+.btn-back:hover{background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.btn-next{background:linear-gradient(135deg,rgba(30,30,30,0.92),rgba(0,0,0,0.85));color:#fff;box-shadow:0 3px 12px rgba(0,0,0,0.28)}
+.btn-next:hover{background:rgba(0,0,0,0.95)}
+.btn-finish{background:linear-gradient(135deg,#e8a43c,#e07a20);color:#fff;box-shadow:0 3px 12px rgba(232,164,60,0.4);font-size:1rem}
+.btn-finish:hover{background:linear-gradient(135deg,#f0b040,#e08020)}
+/* FINAL */
+.final-outer{width:100%;max-width:500px;padding:0 16px 40px;display:flex;flex-direction:column;align-items:center}
+#finalCard{border-radius:26px;padding:30px 24px 24px;width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 16px 60px rgba(0,0,0,0.28),0 4px 16px rgba(0,0,0,0.12);position:relative;overflow:hidden}
+.fheadline{font-family:'Caveat',cursive;font-size:2.1rem;font-weight:700;color:#111;text-align:center;line-height:1.2;letter-spacing:.01em;transition:color .3s}
+/* Final note - notebook style */
+.fnote{background:#fffef8;border-radius:4px 10px 10px 4px;padding:14px 18px 14px 50px;width:100%;position:relative;min-height:60px;box-shadow:0 2px 10px rgba(0,0,0,0.1);border-left:5px solid var(--accent)}
+.fnote::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(to bottom,transparent,transparent 27px,rgba(90,140,230,0.12) 27px,rgba(90,140,230,0.12) 28px);pointer-events:none}
+.fnote::before{content:'';position:absolute;left:40px;top:0;bottom:0;width:1.5px;background:rgba(220,70,70,0.18)}
+.fnote-holes{position:absolute;left:-2px;top:10px;display:flex;flex-direction:column;gap:26px;z-index:2}
+.fnote-hole{width:13px;height:13px;border-radius:50%;background:#e8e2d4;border:1.5px solid rgba(0,0,0,0.1)}
+.fnote-text{font-family:'Caveat',cursive;font-size:1.12rem;color:#1a1a2e;line-height:30px;white-space:pre-wrap;word-break:break-word;position:relative;z-index:3}
+.fnote-text ul{margin-left:1.2em;list-style:disc}
+.fnote-text ol{margin-left:1.2em;list-style:decimal}
+.fcass{width:100%;max-width:300px}
+.fcass svg{width:100%;height:auto;display:block}
+.ftracks{background:rgba(255,255,255,0.85);border-radius:10px;padding:12px 16px;width:100%;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.ftrack{font-family:'Caveat',cursive;font-size:1.1rem;color:#1a1a2e;padding:7px 0;border-bottom:1px dashed rgba(0,0,0,0.1);display:flex;gap:10px;align-items:center}
+.ftrack:last-child{border-bottom:none}
+.ftn{color:#aaa;font-size:.85rem;min-width:22px;flex-shrink:0;font-family:'DM Sans',sans-serif;font-weight:600}
+.sharebtns{display:flex;gap:10px;width:100%;margin-top:12px;flex-wrap:wrap}
+.sbtn{flex:1;min-width:120px;padding:13px;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .18s;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
+.sbtn-copy{background:rgba(255,255,255,0.92);color:#111}
+.sbtn-copy:hover{background:#fff}
+.sbtn-dl{background:var(--accent);color:#fff}
+.sbtn-dl:hover{background:#5b80cc}
+.sbtn-new{background:rgba(20,20,20,0.85);color:#fff}
+.sbtn-new:hover{background:rgba(0,0,0,0.95)}
+.hidden{display:none!important}
+@keyframes fadein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fadein{animation:fadein .35s cubic-bezier(.22,.68,0,1.2) both}
+@keyframes popin{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+.popin{animation:popin .3s cubic-bezier(.22,.68,0,1.2) both}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+/* STICKER CANVAS */
+.sticker-stage-wrap{position:relative;width:100%;margin-bottom:10px}
+.sticker-stage{display:block;border-radius:12px;cursor:crosshair;touch-action:none;width:100%;box-shadow:0 4px 18px rgba(0,0,0,0.2)}
+.sticker-controls{display:flex;gap:6px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+.sctrl{background:rgba(255,255,255,0.94);border:none;border-radius:10px;padding:7px 14px;font-size:.74rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;color:#333;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.13)}
+.sctrl:hover{background:#fff;border-color:#aaa}
+.sctrl.danger:hover{border-color:#e55;color:#e55;background:#fff5f5}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-logo">Mixtape <em>for you</em></div></nav>
+
+<div style="display:flex;justify-content:center;width:100%"><div class="steps" id="stepsEl">
+  <div class="sd active" id="sd1"><span class="sdn">1</span></div>
+  <div class="sl" id="sl1"></div>
+  <div class="sd" id="sd2"><span class="sdn">2</span></div>
+  <div class="sl" id="sl2"></div>
+  <div class="sd" id="sd3"><span class="sdn">3</span></div>
+  <div class="sl" id="sl3"></div>
+  <div class="sd" id="sd4"><span class="sdn">4</span></div>
+</div></div>
+
+<!-- STEP 1 -->
+<div class="card fadein" id="step1">
+  <div class="stitle">Pick Cassette Style</div>
+  <div class="cass-duo">
+    <div class="cass-duo-side"><div id="cw1f"></div><div class="cass-face-label">Front</div></div>
+    <div class="cass-duo-side"><div id="cw1b"></div><div class="cass-face-label">Back</div></div>
+  </div>
+  <div class="swatches" id="swatches"></div>
+  <div class="theme-name" id="themeName"></div>
+  <div class="navbtns"><button class="btn btn-next" onclick="goStep(2)">Next</button></div>
+</div>
+
+<!-- STEP 2 -->
+<div class="card fadein hidden" id="step2">
+  <div class="stitle">Add Stickers</div>
+
+  <!-- Front cassette (static) -->
+  <div class="cass-duo" style="margin-bottom:10px">
+    <div class="cass-duo-side"><div id="cw2f"></div><div class="cass-face-label">Front (auto-updates)</div></div>
+    <div class="cass-duo-side">
+      <div class="cass-face-label" style="margin-bottom:6px">Back (drag stickers below)</div>
+      <div class="sticker-stage-wrap">
+        <canvas id="stickerCanvas" class="sticker-stage"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticker-hint">tap a sticker to place &nbsp;|&nbsp; drag to move &nbsp;|&nbsp; pinch to resize &nbsp;|&nbsp; double-tap to delete</div>
+  <div class="sticker-controls">
+    <button class="sctrl" onclick="scaleSelected(0.15)">+ bigger</button>
+    <button class="sctrl" onclick="scaleSelected(-0.15)">- smaller</button>
+    <button class="sctrl" onclick="rotateSelected()">&#8635; rotate</button>
+    <button class="sctrl danger" onclick="removeSelected()">&#128465; remove</button>
+    <button class="sctrl danger" onclick="clearStickers()">clear all</button>
+  </div>
+
+  <p class="slimit">Up to 8 stickers &middot; <span id="sCount">0</span> placed</p>
+  <div class="sgrid" id="sgrid"></div>
+  <div class="navbtns">
+    <button class="btn btn-back" onclick="goStep(1)">Back</button>
+    <button class="btn btn-next" onclick="goStep(3)">Next</button>
+  </div>
+</div>
+
+<!-- STEP 3 -->
+<div class="card fadein hidden" id="step3">
+  <div class="stitle">Add Your Songs</div>
+  <div class="cass-duo">
+    <div class="cass-duo-side"><div id="cw3f"></div><div class="cass-face-label">Front</div></div>
+    <div class="cass-duo-side"><div id="cw3b"></div><div class="cass-face-label">Back</div></div>
+  </div>
+  <div class="alist" id="alistEl"></div>
+  <div class="slim" id="slimTxt">0 / 8 songs added</div>
+  <div class="sbar">
+    <input type="text" id="searchInput" placeholder="Search a song or artist..."/>
+    <button onclick="doSearch()">&#128269;</button>
+  </div>
+  <div class="sp-hint">Powered by iTunes &middot; tap play to preview 30s &middot; no login needed</div>
+  <div class="sresults" id="sresults"></div>
+  <div class="navbtns" style="margin-top:12px">
+    <button class="btn btn-back" onclick="goStep(2)">Back</button>
+    <button class="btn btn-next" onclick="goStep(4)">Next</button>
+  </div>
+</div>
+
+<!-- STEP 4 -->
+<div class="card fadein hidden" id="step4">
+  <div class="stitle">Add a Little Note</div>
+  <div class="cass-duo">
+    <div class="cass-duo-side"><div id="cw4f"></div><div class="cass-face-label">Front</div></div>
+    <div class="cass-duo-side"><div id="cw4b"></div><div class="cass-face-label">Back</div></div>
+  </div>
+  <div style="height:12px"></div>
+  <div class="recip-row">
+    <label>THIS IS FOR</label>
+    <input type="text" id="recipInput" placeholder="their name" maxlength="40"/>
+  </div>
+  <div class="notec">
+    <div class="note-toolbar">
+      <select class="ntool-select" onchange="execCmd('fontName',this.value)" title="Font">
+        <option value="Georgia,serif">Georgia</option>
+        <option value="'Caveat',cursive">Caveat</option>
+        <option value="'Indie Flower',cursive">Indie Flower</option>
+        <option value="'Josefin Sans',sans-serif">Josefin</option>
+        <option value="'Courier New',monospace">Courier</option>
+        <option value="Arial,sans-serif">Arial</option>
+        <option value="'Times New Roman',serif">Times</option>
+      </select>
+      <select class="ntool-select" onchange="execCmd('fontSize',this.value)" title="Size" style="width:52px">
+        <option value="2">S</option>
+        <option value="3" selected>M</option>
+        <option value="4">L</option>
+        <option value="5">XL</option>
+      </select>
+      <div class="ntool-sep"></div>
+      <button class="ntool" onclick="execCmd('bold')" title="Bold"><b>B</b></button>
+      <button class="ntool" onclick="execCmd('italic')" title="Italic"><i>I</i></button>
+      <button class="ntool" onclick="execCmd('underline')" title="Underline"><u>U</u></button>
+      <div class="ntool-sep"></div>
+      <button class="ntool" onclick="execCmd('insertUnorderedList')" title="Bullets">&#8226; list</button>
+      <button class="ntool" onclick="execCmd('insertOrderedList')" title="Numbered">1. list</button>
+      <div class="ntool-sep"></div>
+      <input type="color" class="ntool-color" id="colorPicker" value="#000000" onchange="execCmd('foreColor',this.value)" title="Text color"/>
+      <button class="ntool ntool-clear" onclick="clearNote()" title="Clear">x</button>
+    </div>
+    <div class="nholes"><div class="nhole"></div><div class="nhole"></div><div class="nhole"></div><div class="nhole"></div><div class="nhole"></div></div>
+    <div class="ntextarea" id="noteInput" contenteditable="true" data-placeholder="write something sweet..." oninput="onNote()" onkeydown="ensureBlackDefault(event)"></div>
+    <div class="ncount"><span id="nc">0</span>/500</div>
+  </div>
+  <div class="navbtns">
+    <button class="btn btn-back" onclick="goStep(3)">Back</button>
+    <button class="btn btn-finish" onclick="finish()">Finish</button>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="final-outer hidden fadein" id="stepFinal">
+  <div class="done-badge">your mixtape is ready!</div>
+  <div id="finalCard">
+    <div class="fheadline" id="fheadline">Mixtape for You</div>
+    <div class="fnote">
+      <div class="fnote-holes"><div class="fnote-hole"></div><div class="fnote-hole"></div><div class="fnote-hole"></div></div>
+      <div class="fnote-text" id="fnoteText"></div>
+    </div>
+    <div style="display:flex;gap:10px;width:100%;align-items:flex-start">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px">
+        <div class="fcass" id="fcassF"></div>
+        <div class="cass-face-label">Front</div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px">
+        <div class="fcass" id="fcassB"></div>
+        <div class="cass-face-label">Back</div>
+      </div>
+    </div>
+    <div class="ftracks" id="ftracks"></div>
+  </div>
+  <div class="sharebtns">
+    <button class="sbtn sbtn-copy" onclick="copyList()">Copy tracklist</button>
+    <button class="sbtn sbtn-dl" onclick="dlCard()">Save &amp; Play</button>
+    <button class="sbtn sbtn-new" onclick="startOver()">New tape</button>
+  </div>
+  <div class="footer">made with love &middot; mixtape for you</div>
+</div>
+
+<script>
+var S = { theme:0, stickers:[], songs:[], note:'', noteHtml:'', noteColor:'#000000', recipient:'' };
+
+var THEMES = [
+  // ── LIGHT / PASTEL ──
+  {n:'Red Grid',      body:'#f5f0ea', pat:'grid',    pc:'#d04040', acc:'#c8c0b8', bg:'#b8cfe8', dark:false},
+  {n:'Blue Floral',   body:'#d8eaf8', pat:'flowers', pc:'#5a9ed0', acc:'#7ab0d8', bg:'#9ac4e0', dark:false},
+  {n:'Sage Gingham',  body:'#dceadc', pat:'gingham', pc:'#5a9a5a', acc:'#7ab47a', bg:'#a0cca0', dark:false},
+  {n:'Pink Stars',    body:'#fce8f0', pat:'stars',   pc:'#d86888', acc:'#e0a0b0', bg:'#f0b0c8', dark:false},
+  {n:'Lemon Check',   body:'#fef8d0', pat:'gingham', pc:'#c0a820', acc:'#c8b840', bg:'#e8d850', dark:false},
+  {n:'Lavender Dots', body:'#eee8f8', pat:'dots',    pc:'#9070c8', acc:'#b0a0e0', bg:'#c8b8f0', dark:false},
+  {n:'Mint Lines',    body:'#d8f2e4', pat:'lines',   pc:'#48a878', acc:'#68c890', bg:'#a0dcc0', dark:false},
+  {n:'Peach Dots',    body:'#feeae0', pat:'dots',    pc:'#e07050', acc:'#e0a080', bg:'#f0b898', dark:false},
+  // ── RICH / VIVID ──
+  {n:'Cherry Red',    body:'#ffd8d8', pat:'hearts',  pc:'#c02020', acc:'#e05050', bg:'#e89090', dark:false},
+  {n:'Ocean Blue',    body:'#c0d8f0', pat:'waves',   pc:'#1860c0', acc:'#4080d8', bg:'#6098d0', dark:false},
+  {n:'Forest',        body:'#c8e8c8', pat:'leaves',  pc:'#206020', acc:'#408040', bg:'#70aa70', dark:false},
+  {n:'Lilac Dream',   body:'#e8d8f8', pat:'stars',   pc:'#8040c0', acc:'#a060d8', bg:'#c090e8', dark:false},
+  {n:'Blush Rose',    body:'#f8e0e8', pat:'roses',   pc:'#c85070', acc:'#e090a8', bg:'#f0b8c8', dark:false},
+  {n:'Sky Waves',     body:'#d0ecfc', pat:'waves',   pc:'#2080c0', acc:'#60a8e0', bg:'#88c8f0', dark:false},
+  {n:'Butter Yellow', body:'#fff8d0', pat:'dots',    pc:'#d4a010', acc:'#e8c040', bg:'#f0d860', dark:false},
+  {n:'Vintage',       body:'#f0e8d0', pat:'vintage', pc:'#806040', acc:'#a08060', bg:'#d0c090', dark:false},
+  // ── SPECIAL ──
+  {n:'Velvet Red',    body:'#8b0a1a', pat:'roses',   pc:'#ff9090', acc:'#6b0010', bg:'#5a0010', dark:true},
+  {n:'Velvet Plum',   body:'#4a0a4a', pat:'stars',   pc:'#e080ff', acc:'#6a206a', bg:'#3a0838', dark:true},
+  {n:'Retro Teal',    body:'#1a4a4a', pat:'waves',   pc:'#40e0d0', acc:'#2a6060', bg:'#0d3030', dark:true},
+  {n:'Golden Hour',   body:'#3a2a00', pat:'vintage', pc:'#ffc040', acc:'#604800', bg:'#2a1800', dark:true},
+  // ── DARK / MOODY ──
+  {n:'Midnight',      body:'#1a1a2e', pat:'stars',   pc:'#8080ff', acc:'#4040a0', bg:'#0d0d1a', dark:true},
+  {n:'Dark Rose',     body:'#2a1018', pat:'roses',   pc:'#ff6080', acc:'#802040', bg:'#1a0810', dark:true},
+  {n:'Forest Night',  body:'#0d1a0d', pat:'leaves',  pc:'#40a040', acc:'#206020', bg:'#081008', dark:true},
+  {n:'Deep Ocean',    body:'#0a1a2e', pat:'waves',   pc:'#40a0ff', acc:'#204060', bg:'#060e1a', dark:true}
+];
+
+var STICKER_CATS = [
+  {cat:'♡ Hearts', items:[
+    ['♡','heart'],['♥','suit'],['❤','red heart'],['❥','fancy heart'],['❣','excl heart'],
+    ['ღ','georgian'],['💕','two hearts'],['💗','growing'],['💖','sparkle heart'],['💘','arrow heart'],
+    ['💝','ribbon'],['💞','revolving'],['💓','beating'],['💌','letter'],['💟','deco heart'],
+    ['❦','floral'],['🫶','hands'],['𓆩♡𓆪','rare heart'],['♡₊˚','soft heart'],['⋆𐙚₊˚⊹♡','combo']
+  ]},
+  {cat:'✧ Stars', items:[
+    ['✨','sparkle'],['⭐','star'],['🌟','glowing'],['💫','dizzy'],['✦','black star'],
+    ['✧','white star'],['★','solid'],['☆','hollow'],['⋆','tiny'],['˚','dot star'],
+    ['✮','circled'],['✯','pin star'],['✰','shadow'],['⭑','small solid'],['⭒','small hollow'],
+    ['✮⋆˙','combo'],['⋆˙⟡','combo2'],['☆⋆｡𖦹°‧★','mega'],['✩₊˚.⋆☾⋆⁺₊✧','celestial'],['⭒☆━━━☆⭒','divider']
+  ]},
+  {cat:'☾ Moon & Space', items:[
+    ['🌙','moon'],['☾','crescent'],['☽','rev crescent'],['☀','sun'],['🪐','planet'],
+    ['☄','comet'],['☁','cloud'],['⊹','asterism'],['✺','starburst'],['✷','8-point'],
+    ['☾⋆⁺₊✧','moon combo'],['🪐☄️⭐','space'],['☁︎₊˚⊹♡','cloud heart'],['♱⋆｡˚☾˚｡⋆','moon cross'],['☁︎ ☾ 🕊','ethereal']
+  ]},
+  {cat:'❀ Flowers', items:[
+    ['🌸','blossom'],['🌷','tulip'],['🌹','rose'],['🌺','hibiscus'],['🪷','lotus'],
+    ['🌻','sunflower'],['❀','flower'],['✿','flower2'],['❁','4-petal'],['❃','deco flower'],
+    ['🍀','clover'],['🌿','leaf'],['☘','shamrock'],['⚘','floret'],['❋','6-petal'],
+    ['✾','pinwheel'],['❊','curved'],['˚˖𓍢ִ໋🌷͙֒','rare tulip'],['°❀⋆.ೃ','soft flower'],['⋆˚✿˖°','sparkle flora']
+  ]},
+  {cat:'🎀 Coquette', items:[
+    ['🎀','bow'],['🩰','ballet'],['🩷','pink heart'],['🧸','bear'],['🦢','swan'],
+    ['🪞','mirror'],['🫧','bubbles'],['🍓','berry'],['🍒','cherry'],['🦋','butterfly'],
+    ['୨ৎ','coquette'],['𐙚','ultra rare'],['𝜗ৎ','soft'],['⋆˚𝜗𝜚˚⋆','combo'],['༘⋆🌷🫧💭','dream'],
+    ['🫧🎀☁️🩰','full combo'],['🦢🪞🎀','swan set'],['🌷🫧💌','letter set'],['ꕤ','flower rare'],['ꨄ','love rare']
+  ]},
+  {cat:'♱ Goth & Dark', items:[
+    ['♱','cross'],['✞','bold cross'],['✟','latin cross'],['☥','ankh'],['⛧','pentagram'],
+    ['♰','gothic cross'],['☠','skull'],['🦇','bat'],['🕷','spider'],['🖤','black heart'],
+    ['⚰','coffin'],['🕯','candle'],['🥀','dead rose'],['⛓','chain'],['🕸','web'],
+    ['🩸','blood'],['☾𖤐🖤','dark moon'],['♱🕯️⛓️🦇','dark combo'],['🕯️🥀🖤','goth set'],['𖤐','occult']
+  ]},
+  {cat:'🎧 Music', items:[
+    ['🎧','headphones'],['🎵','note'],['🎶','notes'],['♪','musical'],['♫','beam'],
+    ['♬','beamed'],['♩','quarter note'],['♭','flat'],['♮','natural'],['♯','sharp'],
+    ['🎸','guitar'],['🎹','piano'],['🎤','mic'],['📻','radio'],['🎼','staff'],
+    ['✩ ♬ ₊.🎧⋆☾','audio combo'],['⋆.˚✮🎧✮˚.⋆','sparkle audio'],['🎧☾💭','night vibes'],['‧₊˚♪ 𝄞₊˚⊹','music soft'],['▶︎ •၊၊||','playing']
+  ]},
+  {cat:'🌊 Ocean & Dream', items:[
+    ['🫧','bubbles'],['🪼','jellyfish'],['🐚','shell'],['🌊','wave'],['🦀','crab'],
+    ['🌈','rainbow'],['💭','thought'],['🕊','dove'],['🤍','white heart'],['🌧','rain'],
+    ['𓇼','ancient star'],['𓆉','eye ancient'],['𓆝','fish'],['𓆡','fish2'],['𓆞','fish3'],
+    ['🫧𓇼𓏲*ੈ✩','ocean combo'],['🪼⋆｡𖦹°🫧','jelly combo'],['𓇼 𓆉 𓆝 𓆟 𓆞','fish row'],['🫧🪽🦢🤍','angel set'],['⋆.˚ 𓆉 𓇼','sparkle ancient']
+  ]},
+  {cat:'✿ Kaomoji', items:[
+    ['(´꒳`)♡','cute'],['( ˘͈ ᵕ ˘͈♡)','happy'],['(╥﹏╥)','cry'],['(¬‿¬)','smug'],['ヾ(•ω•`)o','wave'],
+    ['(づ｡◕‿‿◕｡)づ','hug'],['ʚ₍ᐢ. .ᐢ₎ɞ','bunny'],['૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა','bear'],['(っ˕-｡)ᶻ𝗓','sleep'],['(つ≧▽≦)つ','cheer']
+  ]},
+  {cat:'✮ Rare Unicode', items:[
+    ['𖤐','occult'],['𖦹','rare1'],['𓆩♡𓆪','heart rare'],['𓇼','star anc'],['𐙚','ultra'],
+    ['𑁍','flower rare'],['𓍼','ankh rare'],['𓂀','eye of ra'],['𓃠','cat anc'],['𓃗','bird'],
+    ['꩜','swirl'],['ꕥ','flower2'],['𖹭','rare2'],['𓍯','staff'],['𓋼','scarab'],
+    ['ৎ୭','rare3'],['⟡','diamond'],['𖥔','tiny star'],['𖧷','flower rare'],['꒰ঌ♡໒꒱','heart frm']
+  ]},
+  {cat:'☁ Angelcore', items:[
+    ['☁','cloud'],['🕊','dove'],['👼','angel'],['✞','cross'],['✧','sparkle'],
+    ['🤍','white heart'],['🪞','mirror'],['🌿','leaf'],['🕯','candle'],['🌸','blossom'],
+    ['✧⋆｡˚','angel combo'],['🕯️✞☁️','ethereal'],['☁️♡🪐','dreamy'],['🪞🕊️🤍','mirror set'],['🌫️✨','mist']
+  ]},
+  {cat:'💻 Y2K & Scene', items:[
+    ['🎱','8ball'],['★彡','y2k star'],['✩','star hollow'],['✮','circle star'],['✦','4 point'],
+    ['✧','4 pt hollow'],['⊹','asterism'],['⋆','tiny star'],['☆','hollow star'],['❋','6 petal'],
+    ['✮⋆˙','star soft'],['₊˚⊹♡','soft pink'],['⋆౨ৎ˚','coquette'],['༺♡༻','heart frame'],['✦•┈•✦','divider']
+  ]},
+  {cat:'Combos & Sets', items:[
+    ['♡✧♱❀☾','all vibes'],['☾𖤐✞🕯️🖤','dark set'],['⋆𐙚₊˚⊹♡','soft combo'],['₊˚⊹౨ৎ˚₊','coquette2'],['🎀🩷🫧','pink set'],
+    ['☁︎₊˚⊹☆','cloud star'],['🕸🦇🕯️','goth set'],['☕📜🕯️','cozy'],['🪞🦢🤍','swan set'],['🌷🫧💌','floral mail']
+  ]}
+];
+
+// ---- DRAGGABLE STICKER CANVAS ----
+var sCanvas = null, sCtx = null, sCassImg = null;
+var stickerObjs = []; // [{emoji, x, y, scale, rot}]  x,y = 0-1 fractions of canvas
+var dragIdx = -1, dragOffX = 0, dragOffY = 0;
+var selIdx = -1;
+var lastTapTime = 0;
+var pinchStartDist = 0, pinchStartScale = 1;
+
+function initStickerCanvas() {
+  sCanvas = document.getElementById('stickerCanvas');
+  if (!sCanvas) return;
+  var wrap = sCanvas.parentElement;
+  var W = wrap.clientWidth || 340;
+  var H = Math.round(W * 252 / 400);
+  var dpr = window.devicePixelRatio || 1;
+  sCanvas.width = W * dpr;
+  sCanvas.height = H * dpr;
+  sCanvas.style.width = W + 'px';
+  sCanvas.style.height = H + 'px';
+  sCtx = sCanvas.getContext('2d');
+  sCtx.scale(dpr, dpr);
+
+  // Load back cassette as background image
+  var svgStr = cBackSVGEmpty(S.theme, 400);
+  svgToImg(svgStr).then(function(img) { sCassImg = img; drawCanvas(); });
+
+  sCanvas.addEventListener('mousedown', onMDown);
+  sCanvas.addEventListener('mousemove', onMMove);
+  sCanvas.addEventListener('mouseup', onMUp);
+  sCanvas.addEventListener('mouseleave', onMUp);
+  sCanvas.addEventListener('dblclick', onMDbl);
+  sCanvas.addEventListener('touchstart', onTStart, {passive:false});
+  sCanvas.addEventListener('touchmove', onTMove, {passive:false});
+  sCanvas.addEventListener('touchend', onTEnd, {passive:false});
+}
+
+// Back SVG with no stickers (for canvas background)
+function cBackSVGEmpty(ti, w) {
+  var t = THEMES[ti];
+  var VW = 400, VH = 252, rx = 16;
+  var isDark = t.dark || false;
+  var BODY = isDark ? '#0d0d0d' : '#1a1a1a';
+  var BODY2 = isDark ? '#141414' : '#242424';
+  var labelBg = isDark ? 'rgba(255,255,255,0.08)' : t.body;
+  var labelStroke = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)';
+  var sideBCol = isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)';
+  var xhid = 'xhbe' + ti;
+  var LX = 14, LY = 14, LW = VW - 28, LH = 148;
+  var pegY = LY + LH + 8 + (VH - (LY + LH + 12)) / 2;
+  var pegsH = '';
+  [70,148,200,252,330].forEach(function(px) {
+    pegsH += '<circle cx="'+px+'" cy="'+pegY+'" r="8" fill="#111" stroke="rgba(255,255,255,0.08)" stroke-width="1"/><circle cx="'+px+'" cy="'+pegY+'" r="4" fill="'+BODY+'"/>';
+  });
+  return '<svg viewBox="0 0 400 252" xmlns="http://www.w3.org/2000/svg">'
+    +'<defs><pattern id="'+xhid+'" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6L6 0" stroke="rgba(255,255,255,0.04)" stroke-width="0.8"/></pattern></defs>'
+    +'<rect x="8" y="12" width="384" height="238" rx="16" fill="rgba(0,0,0,0.28)"/>'
+    +'<rect x="2" y="2" width="396" height="248" rx="16" fill="'+BODY+'"/>'
+    +'<rect x="2" y="2" width="396" height="248" rx="16" fill="url(#'+xhid+')"/>'
+    +'<rect x="'+LX+'" y="'+LY+'" width="'+LW+'" height="'+LH+'" rx="6" fill="'+labelBg+'" stroke="'+labelStroke+'" stroke-width="1.2"/>'
+    +'<rect x="2" y="'+(LY+LH+8)+'" width="396" height="'+(VH-(LY+LH+12))+'" fill="'+BODY2+'"/>'
+    +pegsH
+    +'<rect x="3" y="3" width="394" height="18" rx="14" fill="rgba(255,255,255,0.06)"/>'
+    +'<text x="'+(LX+LW-10)+'" y="'+(LY+12)+'" font-family="monospace" font-size="8" fill="'+sideBCol+'" text-anchor="end">SIDE B</text>'
+    +'</svg>';
+}
+
+function cW() { return sCanvas ? sCanvas.width / (window.devicePixelRatio || 1) : 340; }
+function cH() { return sCanvas ? sCanvas.height / (window.devicePixelRatio || 1) : 213; }
+
+function drawCanvas() {
+  if (!sCtx) return;
+  var W = cW(), H = cH();
+  sCtx.clearRect(0, 0, W, H);
+  if (sCassImg) sCtx.drawImage(sCassImg, 0, 0, W, H);
+
+  if (!stickerObjs.length) {
+    sCtx.fillStyle = 'rgba(0,0,0,0.18)';
+    sCtx.font = 'bold ' + Math.round(W * 0.032) + 'px DM Sans, sans-serif';
+    sCtx.textAlign = 'center';
+    sCtx.textBaseline = 'middle';
+    sCtx.fillText('tap a sticker below to place it here', W / 2, H / 2);
+    return;
+  }
+
+  stickerObjs.forEach(function(s, i) {
+    var x = s.x * W, y = s.y * H;
+    // Size relative to canvas: base = W*0.095 matches SVG base of 38 at VW=400
+    // Both use the same fraction so positions/sizes stay in sync
+    var sz = (s.scale || 1) * (W * 0.095);
+    sCtx.save();
+    sCtx.translate(x, y);
+    sCtx.rotate((s.rot || 0) * Math.PI / 180);
+    if (i === selIdx) {
+      sCtx.strokeStyle = 'rgba(80,130,255,0.85)';
+      sCtx.lineWidth = 2;
+      sCtx.setLineDash([4, 3]);
+      sCtx.beginPath(); sCtx.arc(0, 0, sz * 0.6, 0, Math.PI * 2); sCtx.stroke();
+      sCtx.setLineDash([]);
+      // delete handle
+      sCtx.fillStyle = 'rgba(220,60,60,0.9)';
+      sCtx.beginPath(); sCtx.arc(sz * 0.5, -sz * 0.5, 9, 0, Math.PI * 2); sCtx.fill();
+      sCtx.fillStyle = '#fff';
+      sCtx.font = 'bold 12px sans-serif';
+      sCtx.textAlign = 'center'; sCtx.textBaseline = 'middle';
+      sCtx.fillText('x', sz * 0.5, -sz * 0.5);
+    }
+    sCtx.font = sz + 'px Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif';
+    sCtx.textAlign = 'center'; sCtx.textBaseline = 'middle';
+    sCtx.fillText(s.emoji, 0, 0);
+    sCtx.restore();
+  });
+}
+
+function hitTest(x, y) {
+  var W = cW(), H = cH();
+  for (var i = stickerObjs.length - 1; i >= 0; i--) {
+    var s = stickerObjs[i];
+    var sx = s.x * W, sy = s.y * H;
+    var sz = (s.scale || 1) * W * 0.095 * 0.6;
+    if (Math.hypot(x - sx, y - sy) < sz) return i;
+  }
+  return -1;
+}
+
+function delBtnHit(x, y) {
+  if (selIdx < 0) return false;
+  var W = cW(), H = cH();
+  var s = stickerObjs[selIdx];
+  var sx = s.x * W, sy = s.y * H;
+  var sz = (s.scale || 1) * W * 0.095;
+  return Math.hypot(x - (sx + sz * 0.5), y - (sy - sz * 0.5)) < 12;
+}
+
+function getXY(e) {
+  var r = sCanvas.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+function onMDown(e) {
+  var p = getXY(e);
+  if (delBtnHit(p.x, p.y)) { removeSelected(); return; }
+  var idx = hitTest(p.x, p.y);
+  selIdx = idx; dragIdx = idx;
+  if (idx >= 0) {
+    var W = cW(), H = cH();
+    dragOffX = p.x - stickerObjs[idx].x * W;
+    dragOffY = p.y - stickerObjs[idx].y * H;
+    sCanvas.style.cursor = 'grabbing';
+  }
+  drawCanvas();
+}
+function onMMove(e) {
+  if (dragIdx < 0) return;
+  var p = getXY(e);
+  var W = cW(), H = cH();
+  stickerObjs[dragIdx].x = Math.max(0.06, Math.min(0.94, (p.x - dragOffX) / W));
+  stickerObjs[dragIdx].y = Math.max(0.08, Math.min(0.62, (p.y - dragOffY) / H));
+  drawCanvas();
+}
+function onMUp() { dragIdx = -1; sCanvas.style.cursor = 'crosshair'; syncBack(); }
+function onMDbl(e) {
+  var p = getXY(e);
+  var idx = hitTest(p.x, p.y);
+  if (idx >= 0) { stickerObjs.splice(idx, 1); if (selIdx === idx) selIdx = -1; else if (selIdx > idx) selIdx--; drawCanvas(); syncBack(); updateSCount(); }
+}
+
+function onTStart(e) {
+  e.preventDefault();
+  if (e.touches.length === 2 && selIdx >= 0) {
+    var t0 = e.touches[0], t1 = e.touches[1];
+    pinchStartDist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+    pinchStartScale = stickerObjs[selIdx].scale || 1;
+    return;
+  }
+  var r = sCanvas.getBoundingClientRect();
+  var x = e.touches[0].clientX - r.left, y = e.touches[0].clientY - r.top;
+  var now = Date.now();
+  if (now - lastTapTime < 280) { // double tap
+    var idx = hitTest(x, y);
+    if (idx >= 0) { stickerObjs.splice(idx, 1); if (selIdx === idx) selIdx = -1; drawCanvas(); syncBack(); updateSCount(); }
+    lastTapTime = 0; return;
+  }
+  lastTapTime = now;
+  if (delBtnHit(x, y)) { removeSelected(); return; }
+  var idx = hitTest(x, y);
+  selIdx = idx; dragIdx = idx;
+  if (idx >= 0) {
+    var W = cW(), H = cH();
+    dragOffX = x - stickerObjs[idx].x * W;
+    dragOffY = y - stickerObjs[idx].y * H;
+  }
+  drawCanvas();
+}
+function onTMove(e) {
+  e.preventDefault();
+  if (e.touches.length === 2 && selIdx >= 0) {
+    var t0 = e.touches[0], t1 = e.touches[1];
+    var dist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+    stickerObjs[selIdx].scale = Math.max(0.3, Math.min(3.5, pinchStartScale * (dist / pinchStartDist)));
+    drawCanvas(); return;
+  }
+  if (dragIdx < 0) return;
+  var r = sCanvas.getBoundingClientRect();
+  var x = e.touches[0].clientX - r.left, y = e.touches[0].clientY - r.top;
+  var W = cW(), H = cH();
+  stickerObjs[dragIdx].x = Math.max(0.06, Math.min(0.94, (x - dragOffX) / W));
+  stickerObjs[dragIdx].y = Math.max(0.08, Math.min(0.62, (y - dragOffY) / H));
+  drawCanvas();
+}
+function onTEnd(e) { e.preventDefault(); dragIdx = -1; syncBack(); }
+
+function placeStickerOnCanvas(emoji, callback) {
+  if (stickerObjs.length >= 12) {
+    var el = document.getElementById('sCount');
+    if (el) { el.style.color = '#e55'; setTimeout(function() { el.style.color = ''; }, 600); }
+    return;
+  }
+  // Constrain to label area only (fractions of 400x252 canvas)
+  // Label: x 14-386, y 14-162 → with sticker radius margin ~0.08
+  var xMin = 0.08, xMax = 0.92;
+  var yMin = 0.10, yMax = 0.60;
+  var x = xMin + Math.random() * (xMax - xMin);
+  var y = yMin + Math.random() * (yMax - yMin);
+  stickerObjs.push({ emoji: emoji, x: x, y: y, scale: 1, rot: 0 });
+  selIdx = stickerObjs.length - 1;
+  if (!sCtx) initStickerCanvas();
+  else { svgToImg(cBackSVGEmpty(S.theme, 400)).then(function(img) { sCassImg = img; drawCanvas(); }); }
+  syncBack();
+  updateSCount();
+  if (typeof callback === 'function') callback();
+}
+
+function scaleSelected(delta) {
+  if (selIdx < 0 || !stickerObjs[selIdx]) return;
+  stickerObjs[selIdx].scale = Math.max(0.3, Math.min(3.5, (stickerObjs[selIdx].scale || 1) + delta));
+  drawCanvas();
+}
+function rotateSelected() {
+  if (selIdx < 0 || !stickerObjs[selIdx]) return;
+  stickerObjs[selIdx].rot = ((stickerObjs[selIdx].rot || 0) + 45) % 360;
+  drawCanvas();
+}
+function removeSelected() {
+  if (selIdx < 0) return;
+  stickerObjs.splice(selIdx, 1);
+  selIdx = Math.min(selIdx, stickerObjs.length - 1);
+  drawCanvas(); syncBack(); updateSCount();
+}
+function clearStickers() {
+  stickerObjs = []; selIdx = -1;
+  S.stickers = [];
+  drawCanvas(); syncBack(); updateSCount();
+}
+function updateSCount() {
+  var el = document.getElementById('sCount');
+  if (el) el.textContent = stickerObjs.length;
+}
+
+// Sync canvas sticker positions back — positions are stored as 0-1 fractions of canvas
+// cBackSVG maps them to VW/VH space correctly
+function syncBack() {
+  S.stickers = stickerObjs.map(function(s) { return s.emoji; });
+  // update other step back cassettes
+  ['3','4'].forEach(function(n) {
+    var b = document.getElementById('cw' + n + 'b');
+    if (b) b.innerHTML = cBackSVG(S.theme, 400);
+  });
+  var fb = document.getElementById('fcassB');
+  if (fb) fb.innerHTML = cBackSVG(S.theme, 300);
+}
+
+// Get canvas logical size (CSS pixels, not device pixels)
+function getCanvasLogicalSize() {
+  if (!sCanvas) return { W: 400, H: 252 };
+  return {
+    W: sCanvas.width / (window.devicePixelRatio || 1),
+    H: sCanvas.height / (window.devicePixelRatio || 1)
+  };
+}
+
+// Rebuild canvas when theme changes (background image needs refresh)
+function refreshCanvas() {
+  if (!sCtx) return;
+  svgToImg(cBackSVGEmpty(S.theme, 400)).then(function(img) { sCassImg = img; drawCanvas(); });
+}
+
+// Decode HTML entity string to real unicode char for canvas rendering
+function decodeHTML(str) {
+  var txt = document.createElement('textarea');
+  txt.innerHTML = str;
+  return txt.value;
+}
+
+function buildStickerEmoji(item) {
+  var rawHTML = item[0];
+  var label   = item[1];
+  var decoded = decodeHTML(rawHTML);
+  var d = document.createElement('div');
+  d.className = 'spick';
+  d.setAttribute('data-emoji', decoded);
+  d.innerHTML = rawHTML + '<div class="ck" id="ck_' + encodeURIComponent(decoded) + '">0</div><small>' + label + '</small>';
+
+  function refreshBadge() {
+    var count = stickerObjs.filter(function(s) { return s.emoji === decoded; }).length;
+    var badge = d.querySelector('.ck');
+    if (badge) {
+      badge.textContent = count > 0 ? count : '';
+      badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+    d.classList.toggle('sel', count > 0);
+  }
+  refreshBadge();
+
+  d.addEventListener('click', function() {
+    if (stickerObjs.length >= 12) {
+      // at cap — flash the count badge red
+      var badge = d.querySelector('.ck');
+      if (badge) { badge.style.background = '#e55'; setTimeout(function() { badge.style.background = ''; }, 500); }
+      return;
+    }
+    // always place a new instance — multiples allowed
+    placeStickerOnCanvas(decoded, refreshBadge);
+  });
+
+  // right-click or long-press removes last instance of this sticker
+  d.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    for (var i = stickerObjs.length - 1; i >= 0; i--) {
+      if (stickerObjs[i].emoji === decoded) {
+        stickerObjs.splice(i, 1);
+        if (selIdx >= stickerObjs.length) selIdx = stickerObjs.length - 1;
+        drawCanvas(); syncBack(); updateSCount(); refreshBadge();
+        break;
+      }
+    }
+  });
+
+  return d;
+}
+
+function buildSGrid() {
+  var el = document.getElementById('sgrid');
+  el.innerHTML = '';
+  STICKER_CATS.forEach(function(cat) {
+    var lbl = document.createElement('div');
+    lbl.className = 'scat-label';
+    lbl.textContent = cat.cat;
+    el.appendChild(lbl);
+    var row = document.createElement('div');
+    row.className = 'scat-row';
+    cat.items.forEach(function(item) { row.appendChild(buildStickerEmoji(item)); });
+    el.appendChild(row);
+  });
+}
+
+// ---- CASSETTE SVG ----
+function makePat(pid, pat, pc, gs, ds, ls, fs) {
+  var p = {
+    grid:    '<pattern id="' + pid + '" width="' + gs + '" height="' + gs + '" patternUnits="userSpaceOnUse"><path d="M' + gs + ' 0L0 0 0 ' + gs + '" fill="none" stroke="' + pc + '" stroke-width="1" opacity="0.45"/></pattern>',
+    gingham: '<pattern id="' + pid + '" width="' + (gs*2) + '" height="' + (gs*2) + '" patternUnits="userSpaceOnUse"><rect width="' + gs + '" height="' + gs + '" fill="' + pc + '" opacity="0.22"/><rect x="' + gs + '" y="' + gs + '" width="' + gs + '" height="' + gs + '" fill="' + pc + '" opacity="0.22"/></pattern>',
+    dots:    '<pattern id="' + pid + '" width="' + (ds*2) + '" height="' + (ds*2) + '" patternUnits="userSpaceOnUse"><circle cx="' + ds + '" cy="' + ds + '" r="2.8" fill="' + pc + '" opacity="0.5"/></pattern>',
+    lines:   '<pattern id="' + pid + '" width="' + ls + '" height="' + ls + '" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="' + ls + '" y2="' + ls + '" stroke="' + pc + '" stroke-width="1" opacity="0.4"/></pattern>',
+    stars:   '<pattern id="' + pid + '" width="' + fs + '" height="' + fs + '" patternUnits="userSpaceOnUse"><text x="3" y="24" font-size="16" fill="' + pc + '" opacity="0.6">&#10022;</text><text x="20" y="38" font-size="10" fill="' + pc + '" opacity="0.4">&#10023;</text></pattern>',
+    flowers: '<pattern id="' + pid + '" width="' + fs + '" height="' + fs + '" patternUnits="userSpaceOnUse"><text x="2" y="26" font-size="20" opacity="0.5">&#127800;</text></pattern>',
+    hearts:  '<pattern id="' + pid + '" width="' + fs + '" height="' + fs + '" patternUnits="userSpaceOnUse"><text x="4" y="24" font-size="16" fill="' + pc + '" opacity="0.5">&#9825;</text><text x="20" y="38" font-size="10" fill="' + pc + '" opacity="0.35">&#9825;</text></pattern>',
+    waves:   '<pattern id="' + pid + '" width="' + (gs*2) + '" height="' + gs + '" patternUnits="userSpaceOnUse"><path d="M0 ' + (gs/2) + ' Q' + (gs/2) + ' 0 ' + gs + ' ' + (gs/2) + ' Q' + (gs*1.5) + ' ' + gs + ' ' + (gs*2) + ' ' + (gs/2) + '" fill="none" stroke="' + pc + '" stroke-width="1.2" opacity="0.45"/></pattern>',
+    leaves:  '<pattern id="' + pid + '" width="' + fs + '" height="' + fs + '" patternUnits="userSpaceOnUse"><text x="4" y="26" font-size="18" opacity="0.45">&#127807;</text></pattern>',
+    roses:   '<pattern id="' + pid + '" width="' + (fs*1.2) + '" height="' + (fs*1.2) + '" patternUnits="userSpaceOnUse"><text x="2" y="28" font-size="22" opacity="0.55">&#127801;</text><text x="' + (fs*0.65) + '" y="' + (fs*1.1) + '" font-size="14" opacity="0.35">&#127801;</text></pattern>',
+    vintage: '<pattern id="' + pid + '" width="' + (gs*3) + '" height="' + (gs*3) + '" patternUnits="userSpaceOnUse"><circle cx="' + (gs*1.5) + '" cy="' + (gs*1.5) + '" r="' + (gs*1.2) + '" fill="none" stroke="' + pc + '" stroke-width="0.8" opacity="0.25"/></pattern>'
+  };
+  return p[pat] || '';
+}
+
+function cSVG(ti, w, songLine) {
+  w = w || 400;
+  var t = THEMES[ti];
+  var VW = 400, VH = 252, rx = 16;
+  var gs = 18, ds = 14, ls = 12, fs = 32;
+  var pid = 'lp' + ti + '_' + w;
+  var xhid = 'xh' + ti + '_' + w;
+  var isDark = t.dark || false;
+  var BODY = isDark ? '#0d0d0d' : '#1a1a1a';
+  var BODY2 = isDark ? '#141414' : '#242424';
+  var labelBg    = isDark ? 'rgba(255,255,255,0.10)' : t.body;
+  var labelStroke= isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.18)';
+  var titleFill  = isDark ? '#ffffff' : '#111111';
+  var titleBg    = isDark ? 'rgba(0,0,0,0.55)' : 'rgba(255,255,255,0.55)';
+  var abFill     = isDark ? 'rgba(255,255,255,0.60)' : 'rgba(0,0,0,0.55)';
+  var abBg       = isDark ? 'rgba(0,0,0,0.30)' : 'rgba(0,0,0,0.07)';
+  var reelFill = isDark ? '#2a2a2a' : '#e8e4de';
+  var reelFill2 = isDark ? '#333' : '#f0ece6';
+  var reelStroke = isDark ? '#555' : '#333';
+  var spokeCol = isDark ? '#666' : '#555';
+  var hubCol = isDark ? '#888' : '#555';
+  var hubFill = isDark ? '#1a1a1a' : '#e0dcd6';
+  var notchCol = isDark ? '#444' : '#888';
+  var LX = 14, LY = 14, LW = VW - 28, LH = 130;
+  var R1X = 110, R2X = 290, RY = Math.round(LY + LH * 0.58), RR = 46, HUB = 16;
+  var TWX = 168, TWY = RY - 26, TWW = 64, TWH = 42;
+  var TAB_Y = LY + LH + 8, TAB_H = VH - TAB_Y - 4;
+  var pegs = [70, 148, 200, 252, 330];
+  var songText = (songLine || '').slice(0, 38);
+  var patDef = makePat(pid, t.pat, t.pc, gs, ds, ls, fs);
+  var patFill = t.pat !== 'none' ? 'url(#' + pid + ')' : 'none';
+
+  var reelsHTML = '';
+  [R1X, R2X].forEach(function(rx2) {
+    var spokes = '';
+    [0, 72, 144, 216, 288].forEach(function(a) {
+      var rad = a * Math.PI / 180;
+      var sx = rx2 + Math.round(RR * 0.7 * Math.cos(rad));
+      var sy = RY + Math.round(RR * 0.7 * Math.sin(rad));
+      spokes += '<line x1="' + rx2 + '" y1="' + RY + '" x2="' + sx + '" y2="' + sy + '" stroke="' + spokeCol + '" stroke-width="2" stroke-linecap="round"/>';
+    });
+    var notches = '';
+    [0, 120, 240].forEach(function(a) {
+      var nx = rx2 + Math.round(HUB * 0.55 * Math.cos(a * Math.PI / 180));
+      var ny = RY + Math.round(HUB * 0.55 * Math.sin(a * Math.PI / 180));
+      notches += '<circle cx="' + nx + '" cy="' + ny + '" r="2.5" fill="' + notchCol + '"/>';
+    });
+    reelsHTML += '<circle cx="' + rx2 + '" cy="' + RY + '" r="' + RR + '" fill="' + reelFill + '" stroke="' + reelStroke + '" stroke-width="1.5"/>';
+    reelsHTML += '<circle cx="' + rx2 + '" cy="' + RY + '" r="' + (RR * 0.82) + '" fill="' + reelFill2 + '" stroke="' + reelStroke + '" stroke-width="0.8" opacity="0.7"/>';
+    reelsHTML += spokes;
+    reelsHTML += '<circle cx="' + rx2 + '" cy="' + RY + '" r="' + (HUB + 3) + '" fill="' + hubCol + '"/>';
+    reelsHTML += '<circle cx="' + rx2 + '" cy="' + RY + '" r="' + HUB + '" fill="' + hubFill + '" stroke="' + reelStroke + '" stroke-width="1"/>';
+    reelsHTML += notches;
+    reelsHTML += '<circle cx="' + rx2 + '" cy="' + RY + '" r="4" fill="' + reelStroke + '"/>';
+  });
+
+  var pegsHTML = '';
+  pegs.forEach(function(px) {
+    pegsHTML += '<circle cx="' + px + '" cy="' + (TAB_Y + TAB_H / 2) + '" r="8" fill="#111" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>';
+    pegsHTML += '<circle cx="' + px + '" cy="' + (TAB_Y + TAB_H / 2) + '" r="4" fill="' + BODY + '"/>';
+  });
+
+  var titleEsc = esc(songText || 'My Mixtape');
+
+  return '<svg viewBox="0 0 ' + VW + ' ' + VH + '" xmlns="http://www.w3.org/2000/svg">'
+    + '<defs>' + patDef
+    + '<pattern id="' + xhid + '" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6L6 0" stroke="rgba(255,255,255,0.04)" stroke-width="0.8"/></pattern>'
+    + '<clipPath id="lclip' + ti + '_' + w + '"><rect x="' + LX + '" y="' + LY + '" width="' + LW + '" height="' + LH + '" rx="6"/></clipPath>'
+    + '</defs>'
+    + '<rect x="8" y="12" width="' + (VW - 16) + '" height="' + (VH - 14) + '" rx="' + rx + '" fill="rgba(0,0,0,0.28)"/>'
+    + '<rect x="2" y="2" width="' + (VW - 4) + '" height="' + (VH - 4) + '" rx="' + rx + '" fill="' + BODY + '"/>'
+    + '<rect x="2" y="2" width="' + (VW - 4) + '" height="' + (VH - 4) + '" rx="' + rx + '" fill="url(#' + xhid + ')"/>'
+    + '<rect x="' + LX + '" y="' + LY + '" width="' + LW + '" height="' + LH + '" rx="6" fill="' + labelBg + '" stroke="' + labelStroke + '" stroke-width="1.2"/>'
+    + '<rect x="' + LX + '" y="' + LY + '" width="' + LW + '" height="' + LH + '" rx="6" fill="' + patFill + '" clip-path="url(#lclip' + ti + '_' + w + ')"/>'
+    + '<rect x="' + (LX + 4) + '" y="' + (LY + 4) + '" width="' + (LW - 8) + '" height="36" rx="4" fill="' + titleBg + '"/>'
+    // stroke pass for outline effect - ensures readability on any pattern
+    + '<text x="' + (LX + LW / 2) + '" y="' + (LY + 26) + '" font-family="Georgia,serif" font-size="16" font-weight="700"'
+    + ' fill="none" stroke="' + (isDark ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.9)') + '" stroke-width="4"'
+    + ' stroke-linejoin="round" text-anchor="middle">' + titleEsc + '</text>'
+    // main text pass
+    + '<text x="' + (LX + LW / 2) + '" y="' + (LY + 26) + '" font-family="Georgia,serif" font-size="16" font-weight="700"'
+    + ' fill="' + titleFill + '" text-anchor="middle">' + titleEsc + '</text>'
+    + '<rect x="' + LX + '" y="' + (LY + LH - 22) + '" width="' + LW + '" height="22" rx="0" fill="' + abBg + '"/>'
+    + '<text x="' + (LX + 10) + '" y="' + (LY + LH - 8) + '" font-family="monospace" font-size="6" fill="' + abFill + '">A  DATE/TIME  NOISE REDUCTION  []ON  []OFF</text>'
+    + '<text x="' + (LX + LW / 2 + 4) + '" y="' + (LY + LH - 8) + '" font-family="monospace" font-size="6" fill="' + abFill + '">B  DATE/TIME  NOISE REDUCTION  []ON  []OFF</text>'
+    + '<rect x="' + TWX + '" y="' + TWY + '" width="' + TWW + '" height="' + TWH + '" rx="5" fill="#111"/>'
+    + '<rect x="' + (TWX + 3) + '" y="' + (TWY + 3) + '" width="' + (TWW - 6) + '" height="' + (TWH - 6) + '" rx="3" fill="#1a1a1a"/>'
+    + '<rect x="' + (TWX + 8) + '" y="' + (TWY + TWH / 2 - 4) + '" width="' + (TWW - 16) + '" height="8" rx="1" fill="#2a2a2a"/>'
+    + reelsHTML
+    + '<rect x="2" y="' + TAB_Y + '" width="' + (VW - 4) + '" height="' + TAB_H + '" fill="' + BODY2 + '"/>'
+    + '<line x1="14" y1="' + (TAB_Y + 1) + '" x2="' + (VW - 14) + '" y2="' + (TAB_Y + 1) + '" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>'
+    + pegsHTML
+    + '<rect x="3" y="3" width="' + (VW - 6) + '" height="18" rx="' + (rx - 2) + '" fill="rgba(255,255,255,0.06)"/>'
+    + '</svg>';
+}
+
+function cBackSVG(ti, w) {
+  w = w || 400;
+  var t = THEMES[ti];
+  var VW = 400, VH = 252, rx = 16;
+  var isDark = t.dark || false;
+  var BODY  = isDark ? '#0d0d0d' : '#1a1a1a';
+  var BODY2 = isDark ? '#141414' : '#242424';
+  // On dark themes use a CREAM label (like a real tape insert) so stickers are always visible
+  var labelBg     = isDark ? '#f0ead8' : t.body;
+  var labelStroke = isDark ? 'rgba(0,0,0,0.20)' : 'rgba(0,0,0,0.12)';
+  var lineCol     = isDark ? 'rgba(0,0,0,0.10)' : 'rgba(0,0,0,0.10)';
+  var hintCol     = isDark ? 'rgba(0,0,0,0.22)' : 'rgba(0,0,0,0.2)';
+  var sideBCol    = isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.3)';
+  var xhid = 'xhb' + ti + '_' + w;
+  var LX = 14, LY = 14, LW = VW - 28, LH = 148;
+  var fid = 'sg' + ti + '_' + w; // sticker glow filter id
+
+  // --- Build stickers HTML with glow filter for visibility on any background ---
+  var filterDef = '<filter id="' + fid + '" x="-40%" y="-40%" width="180%" height="180%">'
+    + '<feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>'
+    + '<feFlood flood-color="rgba(255,255,255,0.9)" result="color"/>'
+    + '<feComposite in="color" in2="blur" operator="in" result="glow"/>'
+    + '<feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>'
+    + '</filter>';
+
+  var stickersHTML = '';
+  if (stickerObjs.length > 0) {
+    stickerObjs.forEach(function(s) {
+      var px = s.x * VW;
+      var py = s.y * VH;
+      // Use same size formula as canvas: scale * VW*0.095 matches canvas W*0.095
+      var sz = Math.round((s.scale || 1) * VW * 0.095);
+      var rot = s.rot || 0;
+      var transform = 'translate(' + px + ',' + py + ') rotate(' + rot + ')';
+      var filterAttr = isDark ? ' filter="url(#' + fid + ')"' : '';
+      stickersHTML += '<text transform="' + transform + '" font-size="' + sz + '"'
+        + ' text-anchor="middle" dominant-baseline="middle"'
+        + filterAttr
+        + ' style="font-family:Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,sans-serif">'
+        + s.emoji + '</text>';
+    });
+  } else if (S.stickers.length > 0) {
+    var se = S.stickers.slice(0, 6);
+    var maxS = se.length;
+    for (var i = 0; i < maxS; i++) {
+      var sx2 = maxS === 1 ? LX + LW / 2 : LX + 28 + (LW - 56) / (maxS - 1) * i;
+      var sy2 = maxS <= 3 ? LY + LH * 0.5 : LY + LH * (0.35 + 0.22 * Math.sin(i * Math.PI / (maxS - 1)));
+      var filterAttr = isDark ? ' filter="url(#' + fid + ')"' : '';
+      stickersHTML += '<text x="' + sx2 + '" y="' + sy2 + '" font-size="38"'
+        + ' text-anchor="middle" dominant-baseline="middle"'
+        + filterAttr
+        + ' style="font-family:Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,sans-serif">'
+        + se[i] + '</text>';
+    }
+  } else {
+    stickersHTML = '<text x="' + (LX + LW / 2) + '" y="' + (LY + LH / 2 + 8)
+      + '" font-family="sans-serif" font-size="12" fill="' + hintCol
+      + '" text-anchor="middle">add stickers in step 2</text>';
+  }
+
+  var lineHTML = '';
+  for (var i = 1; i <= 5; i++) {
+    lineHTML += '<line x1="' + (LX + 16) + '" y1="' + (LY + LH * i / 6)
+      + '" x2="' + (LX + LW - 16) + '" y2="' + (LY + LH * i / 6)
+      + '" stroke="' + lineCol + '" stroke-width="0.8" stroke-dasharray="4,5"/>';
+  }
+
+  var pegY = LY + LH + 8 + (VH - (LY + LH + 12)) / 2;
+  var pegsHTML = '';
+  [70, 148, 200, 252, 330].forEach(function(px) {
+    pegsHTML += '<circle cx="' + px + '" cy="' + pegY + '" r="8" fill="#111" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>';
+    pegsHTML += '<circle cx="' + px + '" cy="' + pegY + '" r="4" fill="' + BODY + '"/>';
+  });
+
+  return '<svg viewBox="0 0 ' + VW + ' ' + VH + '" xmlns="http://www.w3.org/2000/svg">'
+    + '<defs>'
+    + '<pattern id="' + xhid + '" width="6" height="6" patternUnits="userSpaceOnUse">'
+    + '<path d="M0 6L6 0" stroke="rgba(255,255,255,0.04)" stroke-width="0.8"/></pattern>'
+    + filterDef
+    + '</defs>'
+    + '<rect x="8" y="12" width="' + (VW-16) + '" height="' + (VH-14) + '" rx="' + rx + '" fill="rgba(0,0,0,0.28)"/>'
+    + '<rect x="2" y="2" width="' + (VW-4) + '" height="' + (VH-4) + '" rx="' + rx + '" fill="' + BODY + '"/>'
+    + '<rect x="2" y="2" width="' + (VW-4) + '" height="' + (VH-4) + '" rx="' + rx + '" fill="url(#' + xhid + ')"/>'
+    // Cream/coloured label — always light enough for stickers to be visible
+    + '<rect x="' + LX + '" y="' + LY + '" width="' + LW + '" height="' + LH + '" rx="6" fill="' + labelBg + '" stroke="' + labelStroke + '" stroke-width="1.2"/>'
+    + lineHTML
+    + stickersHTML
+    + '<rect x="2" y="' + (LY+LH+8) + '" width="' + (VW-4) + '" height="' + (VH-(LY+LH+12)) + '" fill="' + BODY2 + '"/>'
+    + pegsHTML
+    + '<rect x="3" y="3" width="' + (VW-6) + '" height="18" rx="' + (rx-2) + '" fill="rgba(255,255,255,0.06)"/>'
+    + '<text x="' + (LX+LW-10) + '" y="' + (LY+12) + '" font-family="monospace" font-size="8" fill="' + sideBCol + '" text-anchor="end">SIDE B</text>'
+    + '</svg>';
+}
+
+function getSongLine() {
+  var s = S.songs.slice(0, 2).map(function(s) { return s.name; }).join(' / ');
+  return S.songs.length > 2 ? s + ' ...' : s;
+}
+
+function renderAllCW() {
+  var sl = getSongLine();
+  var frontHTML = cSVG(S.theme, 400, sl);
+  var backHTML = cBackSVG(S.theme, 400);
+  // step 1: both sides
+  var f1 = document.getElementById('cw1f'), b1 = document.getElementById('cw1b');
+  if (f1) f1.innerHTML = frontHTML;
+  if (b1) b1.innerHTML = backHTML;
+  // step 2: only front (back is a canvas)
+  var f2 = document.getElementById('cw2f');
+  if (f2) f2.innerHTML = frontHTML;
+  // steps 3 & 4: both sides
+  ['3','4'].forEach(function(n) {
+    var f = document.getElementById('cw' + n + 'f'), b = document.getElementById('cw' + n + 'b');
+    if (f) f.innerHTML = frontHTML;
+    if (b) b.innerHTML = backHTML;
+  });
+  var ff = document.getElementById('fcassF'), fb = document.getElementById('fcassB');
+  if (ff) ff.innerHTML = cSVG(S.theme, 300, sl);
+  if (fb) fb.innerHTML = cBackSVG(S.theme, 300);
+}
+
+function syncLogoColor() {
+  var t = THEMES[S.theme];
+  // For the nav (white bg), use the page bg color as the accent — always visible on white
+  // If bg is very dark, use a lighter version of the accent
+  var navColor = t.bg;
+  // Convert hex to rough brightness check
+  var hex = t.bg.replace('#','');
+  var r = parseInt(hex.substr(0,2),16);
+  var g = parseInt(hex.substr(2,2),16);
+  var b = parseInt(hex.substr(4,2),16);
+  var brightness = (r*299 + g*587 + b*114) / 1000;
+  // If bg is very dark (dark themes), use the pattern color (pc) which tends to be bright
+  if (brightness < 60) navColor = t.pc;
+  // If pc is also dark, fall back to a pleasant blue
+  var hex2 = navColor.replace('#','');
+  var r2 = parseInt(hex2.substr(0,2),16)||0;
+  var g2 = parseInt(hex2.substr(2,2),16)||0;
+  var b2 = parseInt(hex2.substr(4,2),16)||0;
+  var brightness2 = (r2*299 + g2*587 + b2*114) / 1000;
+  if (brightness2 < 80) navColor = '#7b9ee8'; // fallback blue
+  var em = document.querySelector('.nav-logo em');
+  if (em) em.style.color = navColor;
+  // Update CSS variables for other accented elements (inputs, notebook border etc.)
+  document.documentElement.style.setProperty('--accent', t.acc);
+  document.documentElement.style.setProperty('--accent-light', t.bg);
+}
+
+function buildSwatches() {
+  var el = document.getElementById('swatches');
+  el.innerHTML = '';
+  var hint = {grid:'▦',gingham:'▤',dots:'⠿',lines:'≡',stars:'✦',flowers:'✿',hearts:'♥',waves:'≋',leaves:'✾',vintage:'◎',roses:'✿',none:'○'};
+  THEMES.forEach(function(t, i) {
+    var d = document.createElement('div');
+    d.className = 'swatch' + (i === S.theme ? ' sel' : '');
+    d.title = t.n;
+    d.style.background = t.body;
+    d.style.border = '3px solid ' + t.acc;
+    d.innerHTML = '<span style="font-size:1rem;color:' + t.pc + ';font-weight:900;opacity:0.9;text-shadow:0 0 3px rgba(0,0,0,0.2)">' + (hint[t.pat] || '●') + '</span>';
+    d.addEventListener('click', function() {
+      S.theme = i;
+      document.querySelectorAll('.swatch').forEach(function(s, j) { s.classList.toggle('sel', j === i); });
+      document.getElementById('themeName').textContent = THEMES[i].n;
+      document.body.style.background = THEMES[i].bg;
+      syncLogoColor();
+      renderAllCW();
+      refreshCanvas();
+    });
+    el.appendChild(d);
+  });
+  document.getElementById('themeName').textContent = THEMES[S.theme].n;
+  document.body.style.background = THEMES[S.theme].bg;
+  syncLogoColor();
+}
+
+// ---- ITUNES SEARCH ----
+var currentPreview = null;
+
+function fmtMs(ms) { var s = Math.round(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+
+function doSearch() {
+  var q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+  var res = document.getElementById('sresults');
+  res.innerHTML = '<div class="ldmsg">Searching...</div>';
+  fetch('https://itunes.apple.com/search?term=' + encodeURIComponent(q) + '&media=music&entity=song&limit=8')
+    .then(function(r) { return r.json(); })
+    .then(function(d) { renderResults(d.results || []); })
+    .catch(function() { res.innerHTML = '<div class="ldmsg" style="color:#c55">Search failed. Check connection.</div>'; });
+}
+
+document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
+
+function renderResults(items) {
+  var res = document.getElementById('sresults');
+  if (!items.length) { res.innerHTML = '<div class="ldmsg">No results found.</div>'; return; }
+  res.innerHTML = '';
+  items.forEach(function(tr) {
+    var added = S.songs.some(function(s) { return s.id === tr.trackId; });
+    var art = safeHttpsUrl((tr.artworkUrl60 || '').replace('60x60', '100x100'));
+    var dur = tr.trackTimeMillis ? fmtMs(tr.trackTimeMillis) : '';
+    var el = document.createElement('div');
+    el.className = 'sitem' + (added ? ' added' : '');
+    var artHTML = art ? '<img src="' + art + '" alt=""/>' : '<div class="sart"></div>';
+    var previewUrl = safeHttpsUrl(tr.previewUrl || '');
+    var prevHTML = previewUrl ? '<audio id="prev_' + Number(tr.trackId) + '" src="' + esc(previewUrl) + '" preload="none"></audio><button class="sprev" title="preview" onclick="togglePreview(' + Number(tr.trackId) + ')">&#9654;</button>' : '';
+    el.innerHTML = artHTML + '<div class="sinfo"><div class="sname">' + esc(tr.trackName || '') + '</div><div class="sartist">' + esc(tr.artistName || '') + ' &middot; ' + esc(tr.collectionName || '') + (dur ? ' &middot; ' + dur : '') + '</div></div>' + prevHTML + '<button class="sadd">' + (added ? '&#10003;' : '+') + '</button>';
+    el.querySelector('.sadd').addEventListener('click', function() {
+      var idx = S.songs.findIndex(function(s) { return s.id === tr.trackId; });
+      if (idx >= 0) {
+        S.songs.splice(idx, 1);
+        el.classList.remove('added');
+        el.querySelector('.sadd').innerHTML = '+';
+      } else if (S.songs.length < 8) {
+        S.songs.push({ id: Number(tr.trackId), name: tr.trackName || '', artist: tr.artistName || '', art: safeHttpsUrl(art), url: safeHttpsUrl(tr.trackViewUrl || ''), previewUrl: safeHttpsUrl(tr.previewUrl || '') });
+        el.classList.add('added');
+        el.querySelector('.sadd').innerHTML = '&#10003;';
+      }
+      updateAdded();
+    });
+    res.appendChild(el);
+  });
+}
+
+function togglePreview(id) {
+  var audio = document.getElementById('prev_' + id);
+  var btn = audio ? audio.nextElementSibling : null;
+  if (!audio) return;
+  if (currentPreview && currentPreview !== audio) {
+    currentPreview.pause(); currentPreview.currentTime = 0;
+    var prevBtn = currentPreview.nextElementSibling;
+    if (prevBtn) prevBtn.innerHTML = '&#9654;';
+  }
+  if (audio.paused) {
+    audio.play(); if (btn) btn.innerHTML = '&#9646;&#9646;'; currentPreview = audio;
+    audio.onended = function() { if (btn) btn.innerHTML = '&#9654;'; currentPreview = null; };
+  } else {
+    audio.pause(); if (btn) btn.innerHTML = '&#9654;'; currentPreview = null;
+  }
+}
+
+function updateAdded() {
+  var el = document.getElementById('alistEl');
+  el.innerHTML = '';
+  S.songs.forEach(function(s) {
+    var d = document.createElement('div');
+    d.className = 'achip';
+    d.innerHTML = (s.art ? '<img src="' + s.art + '" alt=""/>' : '<div class="aart"></div>')
+      + '<div style="flex:1;min-width:0"><div class="atitle">' + esc(s.name) + '</div><div class="aartist">' + esc(s.artist) + '</div></div>'
+      + '<button class="arm" title="remove">x</button>';
+    d.querySelector('.arm').addEventListener('click', function() {
+      S.songs = S.songs.filter(function(x) { return x.id !== s.id; });
+      updateAdded();
+    });
+    el.appendChild(d);
+  });
+  document.getElementById('slimTxt').textContent = S.songs.length + ' / 8 songs added';
+  renderAllCW();
+}
+
+// ---- NOTE ----
+// Ensure typed text is black by default if no color set
+function ensureBlackDefault(e) {
+  var el = document.getElementById('noteInput');
+  // If the element is empty or we're at the start, set default color to black
+  if (!el.innerHTML || el.innerHTML === '<br>') {
+    el.style.color = '#000000';
+  }
+}
+
+function execCmd(cmd, val) {
+  var el = document.getElementById('noteInput');
+  el.focus();
+  // Ensure document has a selection range before running command
+  if (!document.getSelection().rangeCount) {
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(range);
+  }
+  document.execCommand(cmd, false, val !== undefined ? val : null);
+  // After color change, update color picker to show current + remember it in state
+  if (cmd === 'foreColor') {
+    var picker = document.querySelector('.ntool-color');
+    if (picker) picker.value = val;
+    S.noteColor = val || '#000000';
+  }
+  el.focus();
+  onNote();
+}
+function clearNote() {
+  var el = document.getElementById('noteInput');
+  el.innerHTML = '';
+  el.style.color = '#000000';
+  document.getElementById('nc').textContent = '0';
+  var picker = document.querySelector('.ntool-color');
+  if (picker) picker.value = '#000000';
+  S.note = ''; S.noteHtml = ''; S.noteColor = '#000000';
+}
+function onNote() {
+  var el = document.getElementById('noteInput');
+  var txt = el.innerText || el.textContent || '';
+  document.getElementById('nc').textContent = Math.min(txt.length, 500);
+  S.note = txt; S.noteHtml = el.innerHTML;
+  // If user hasn't explicitly picked a color yet, keep default black
+  if (!S.noteColor) S.noteColor = '#000000';
+}
+
+// ---- NAVIGATION ----
+function goStep(n) {
+  [1,2,3,4].forEach(function(i) {
+    document.getElementById('step' + i).classList.toggle('hidden', i !== n);
+    document.getElementById('sd' + i).className = 'sd' + (i < n ? ' done' : i === n ? ' active' : '');
+    if (i < 4) document.getElementById('sl' + i).className = 'sl' + (i < n ? ' done' : '');
+  });
+  document.getElementById('stepFinal').classList.add('hidden');
+  if (n === 2) {
+    buildSGrid();
+    // small delay to let layout render before measuring canvas size
+    setTimeout(function() { initStickerCanvas(); }, 80);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function finish() {
+  S.recipient = document.getElementById('recipInput').value.trim();
+  var noteEl = document.getElementById('noteInput');
+  S.note = noteEl.innerText || noteEl.textContent || '';
+  S.noteHtml = noteEl.innerHTML || '';
+  // Required fix: noteColor = selectedColor || '#000000'
+  var selectedColor = S.noteColor;
+  S.noteColor = selectedColor || '#000000';
+  [1,2,3,4].forEach(function(i) {
+    document.getElementById('step' + i).classList.add('hidden');
+    document.getElementById('sd' + i).className = 'sd done';
+    if (i < 4) document.getElementById('sl' + i).className = 'sl done';
+  });
+  document.getElementById('stepFinal').classList.remove('hidden');
+  renderFinal();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ---- FINAL ----
+var currentFinalPreview = null;
+function toggleFinalPreview(i) {
+  var audio = document.getElementById('fpa' + i);
+  var btn = document.getElementById('fpb' + i);
+  if (!audio) return;
+  if (currentFinalPreview && currentFinalPreview !== audio) {
+    currentFinalPreview.pause(); currentFinalPreview.currentTime = 0;
+    var idx = currentFinalPreview.id.replace('fpa', '');
+    var pb = document.getElementById('fpb' + idx);
+    if (pb) pb.innerHTML = '&#9654;';
+  }
+  if (audio.paused) {
+    audio.play(); if (btn) btn.innerHTML = '&#9646;&#9646;'; currentFinalPreview = audio;
+    audio.onended = function() { if (btn) btn.innerHTML = '&#9654;'; currentFinalPreview = null; };
+  } else {
+    audio.pause(); if (btn) btn.innerHTML = '&#9654;'; currentFinalPreview = null;
+  }
+}
+
+
+// Sanitize user-authored rich text before inserting it into the final preview/export.
+// Only basic formatting tags and a small set of presentation styles are retained.
+function sanitizeNoteHtml(input) {
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(String(input || ''), 'text/html');
+  var allowedTags = {B:1, STRONG:1, I:1, EM:1, U:1, BR:1, P:1, DIV:1, UL:1, OL:1, LI:1, SPAN:1, FONT:1};
+  var allowedColors = /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|[a-z]{1,20})$/i;
+  function clean(node) {
+    var out = document.createDocumentFragment();
+    Array.prototype.slice.call(node.childNodes).forEach(function(child) {
+      if (child.nodeType === 3) { out.appendChild(document.createTextNode(child.nodeValue)); return; }
+      if (child.nodeType !== 1) return;
+      if (!allowedTags[child.tagName]) {
+        // Preserve harmless text from unsupported elements, but discard their attributes.
+        out.appendChild(clean(child)); return;
+      }
+      var el = document.createElement(child.tagName.toLowerCase());
+      if (child.tagName === 'FONT') {
+        var color = child.getAttribute('color');
+        if (color && allowedColors.test(color)) el.style.color = color;
+        var face = child.getAttribute('face');
+        if (face && /^[\w\s,'"-]{1,80}$/.test(face)) el.style.fontFamily = face;
+      }
+      var style = child.getAttribute('style') || '';
+      style.split(';').forEach(function(part) {
+        var pair = part.split(':');
+        if (pair.length < 2) return;
+        var prop = pair.shift().trim().toLowerCase(), value = pair.join(':').trim();
+        if (prop === 'color' && allowedColors.test(value)) el.style.color = value;
+        if (prop === 'font-family' && /^[\w\s,'"-]{1,80}$/.test(value)) el.style.fontFamily = value;
+        if (prop === 'font-size' && /^(?:[1-7]|[0-9]+(?:px|pt|em|rem|%))$/.test(value)) el.style.fontSize = value;
+        if (prop === 'text-align' && /^(left|center|right|justify)$/.test(value)) el.style.textAlign = value;
+      });
+      el.appendChild(clean(child));
+      out.appendChild(el);
+    });
+    return out;
+  }
+  var holder = document.createElement('div');
+  holder.appendChild(clean(doc.body));
+  return holder.innerHTML;
+}
+function safeHttpsUrl(value) {
+  try {
+    var parsed = new URL(String(value || ''), window.location.href);
+    return parsed.protocol === 'https:' ? parsed.href : '';
+  } catch (_) { return ''; }
+}
+
+function renderFinal() {
+  var t = THEMES[S.theme];
+  var isDark = t.dark || false;
+
+  // Work out readable text/surface colors based on bg brightness
+  var hex = t.bg.replace('#','');
+  var r = parseInt(hex.substr(0,2),16)||0;
+  var g = parseInt(hex.substr(2,2),16)||0;
+  var b = parseInt(hex.substr(4,2),16)||0;
+  var bright = (r*299+g*587+b*114)/1000;
+  var onBg       = bright < 100 ? '#ffffff' : '#111111';  // text on card bg
+  var onBgMuted  = bright < 100 ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.45)';
+  var trackBg    = bright < 100 ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.82)';
+  var trackBdr   = bright < 100 ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.09)';
+  var prevBtnBdr = bright < 100 ? 'rgba(255,255,255,0.3)' : '#ddd';
+  var prevBtnCol = bright < 100 ? 'rgba(255,255,255,0.8)' : '#666';
+
+  // Headline
+  document.getElementById('fheadline').textContent = S.recipient ? 'Mixtape for ' + S.recipient : 'Mixtape for You';
+  var fhl = document.getElementById('fheadline');
+  fhl.style.color = onBg;
+  fhl.style.textShadow = bright < 100 ? '0 2px 8px rgba(0,0,0,0.5)' : '0 1px 3px rgba(0,0,0,0.08)';
+
+  // Note card — the paper itself is ALWAYS cream/white regardless of cassette theme
+  // (it's a physical sticky-note look), so we never invert it to a dark surface.
+  var fnote = document.getElementById('fnote');
+  if (fnote) {
+    fnote.style.background = '#fffef8';
+    fnote.style.borderLeftColor = t.acc;
+  }
+  var fnoteText = document.getElementById('fnoteText');
+  if (fnoteText) {
+    // Required fix: noteColor = selectedColor || '#000000'
+    // Because the paper is always light, the default MUST always be black —
+    // this no longer depends on the cassette theme's brightness at all.
+    var selectedColor = S.noteColor;
+    var noteColor = selectedColor || '#000000';
+    var rawHtml = sanitizeNoteHtml(S.noteHtml || esc(S.note) || '');
+    var hasContent = !!(rawHtml && rawHtml.replace(/<[^>]*>/g, '').trim().length);
+
+    // Strip any literal white/near-white inline colors a user may have picked —
+    // those would be invisible on the light paper no matter the cassette theme.
+    if (rawHtml) {
+      rawHtml = rawHtml.replace(/color:\s*#fff(fff)?/gi, 'color:' + noteColor)
+                       .replace(/color:\s*white/gi, 'color:' + noteColor)
+                       .replace(/color:\s*rgb\(255,\s*255,\s*255\)/gi, 'color:' + noteColor);
+    }
+
+    fnoteText.style.color = noteColor;
+    fnoteText.style.textShadow = 'none';
+    fnoteText.innerHTML = hasContent ? rawHtml : '<em style="opacity:0.4">(no note)</em>';
+  }
+
+  // Cassettes
+  var sl = getSongLine();
+  var ff = document.getElementById('fcassF'), fb = document.getElementById('fcassB');
+  if (ff) ff.innerHTML = cSVG(S.theme, 300, sl);
+  if (fb) fb.innerHTML = cBackSVG(S.theme, 300);
+
+  // Tracklist
+  var tl = document.getElementById('ftracks');
+  tl.style.background = trackBg;
+  tl.style.boxShadow = bright < 100 ? 'none' : '0 2px 8px rgba(0,0,0,0.08)';
+  if (S.songs.length) {
+    tl.innerHTML = S.songs.map(function(s, i) {
+      var prevBtn = s.previewUrl
+        ? '<button onclick="toggleFinalPreview(' + i + ')" id="fpb' + i + '" style="background:none;border:1.5px solid '
+          + prevBtnBdr + ';border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:.65rem;'
+          + 'flex-shrink:0;margin-left:auto;color:' + prevBtnCol + '">&#9654;</button>'
+          + '<audio id="fpa' + i + '" src="' + esc(safeHttpsUrl(s.previewUrl)) + '" preload="none"></audio>'
+        : '';
+      return '<div class="ftrack" style="color:' + onBg + ';border-bottom-color:' + trackBdr + '">'
+        + '<span class="ftn" style="color:' + onBgMuted + '">' + (i+1) + '.</span>'
+        + '<span>' + esc(s.name) + ' &mdash; ' + esc(s.artist) + '</span>'
+        + prevBtn + '</div>';
+    }).join('');
+  } else {
+    tl.innerHTML = '<div class="ftrack" style="color:' + onBgMuted + ';justify-content:center;font-family:Caveat,cursive">no songs added</div>';
+  }
+
+  // Final card bg
+  var card = document.getElementById('finalCard');
+  card.style.background = t.bg;
+  // subtle inner gradient overlay for depth
+  card.style.backgroundImage = bright < 100
+    ? 'linear-gradient(160deg, rgba(255,255,255,0.04) 0%, transparent 60%)'
+    : 'linear-gradient(160deg, rgba(255,255,255,0.35) 0%, transparent 60%)';
+
+  // Footer / share buttons text adapt
+  var sharebtns = document.querySelector('.sharebtns');
+  if (sharebtns) {
+    var copyBtn = sharebtns.querySelector('.sbtn-copy');
+    if (copyBtn) {
+      copyBtn.style.background = bright < 100 ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.92)';
+      copyBtn.style.color = onBg;
+      copyBtn.style.border = 'none';
+    }
+  }
+}
+
+function copyList() {
+  var txt = S.recipient ? 'Mixtape for ' + S.recipient + '\n' : 'Mixtape for You\n';
+  if (S.note) txt += '\n"' + S.note + '"\n';
+  txt += '\nTracklist:\n';
+  S.songs.forEach(function(s, i) { txt += (i + 1) + '. ' + s.name + ' - ' + s.artist + (s.url ? '\n   ' + s.url : '') + '\n'; });
+  if (!S.songs.length) txt += '(no songs)\n';
+  navigator.clipboard.writeText(txt).then(function() {
+    var b = event.target, o = b.textContent;
+    b.textContent = 'Copied!'; setTimeout(function() { b.textContent = o; }, 2000);
+  });
+}
+
+function svgToImg(svgStr) {
+  return new Promise(function(res, rej) {
+    var blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var img = new Image();
+    img.onload = function() { URL.revokeObjectURL(url); res(img); };
+    img.onerror = rej;
+    img.src = url;
+  });
+}
+
+function dlCard() {
+  var t = THEMES[S.theme];
+  var headline = S.recipient ? 'Mixtape for ' + S.recipient : 'Mixtape for You';
+
+  // Compute adaptive colors for the downloaded file
+  var hex = t.bg.replace('#','');
+  var r = parseInt(hex.substr(0,2),16)||0;
+  var g = parseInt(hex.substr(2,2),16)||0;
+  var b = parseInt(hex.substr(4,2),16)||0;
+  var bright = (r*299+g*587+b*114)/1000;
+  var onBg      = bright < 100 ? '#ffffff'              : '#111111';
+  var onBgMuted = bright < 100 ? 'rgba(255,255,255,0.6)': 'rgba(0,0,0,0.45)';
+  var trackBg   = bright < 100 ? 'rgba(255,255,255,0.12)': 'rgba(255,255,255,0.82)';
+  // The note paper is ALWAYS cream/white (a physical sticky-note look), regardless
+  // of cassette theme, so its text must ALWAYS default to black — not theme brightness.
+  var noteBg    = '#fffef8';
+  var selectedColor = S.noteColor;
+  var noteColor = selectedColor || '#000000';
+  var noteText  = noteColor;
+  var noteBdr   = t.acc;
+  var dotColor  = bright < 100 ? 'rgba(255,255,255,0.12)': 'rgba(255,255,255,0.22)';
+  var h1Color   = onBg;
+  var pbBdr     = bright < 100 ? 'rgba(255,255,255,0.3)' : '#ddd';
+  var pbColor   = bright < 100 ? 'rgba(255,255,255,0.8)' : '#666';
+
+  // Strip any literal white/near-white inline colors a user may have picked —
+  // those would be invisible on the always-light note paper.
+  var noteRawHtml = sanitizeNoteHtml(S.noteHtml || esc(S.note) || '');
+  if (noteRawHtml) {
+    noteRawHtml = noteRawHtml.replace(/color:\s*#fff(fff)?/gi, 'color:' + noteColor)
+                             .replace(/color:\s*white/gi, 'color:' + noteColor)
+                             .replace(/color:\s*rgb\(255,\s*255,\s*255\)/gi, 'color:' + noteColor);
+  }
+  var noteContentHtml = noteRawHtml || '<em style="opacity:0.35">(no note)</em>';
+
+  var tracksHtml = S.songs.map(function(s, i) {
+    var safePreview = safeHttpsUrl(s.previewUrl);
+    var prevBtn = safePreview ? '<button class="tplay" onclick="tp(' + i + ')" id="pb' + i + '" style="border-color:' + pbBdr + ';color:' + pbColor + '">&#9654;</button><audio id="pa' + i + '" src="' + esc(safePreview) + '" preload="none"></audio>' : '';
+    var safeArt = safeHttpsUrl(s.art);
+    var artHTML = safeArt ? '<img src="' + esc(safeArt) + '" class="tart" alt=""/>' : '<div class="tart-empty"></div>';
+    var safeTrackUrl = safeHttpsUrl(s.url);
+    var link = safeTrackUrl ? '<a class="tlink" href="' + esc(safeTrackUrl) + '" target="_blank" rel="noopener noreferrer">&#127925;</a>' : '';
+    return '<div class="track">' + artHTML + '<div class="tinfo"><div class="tname" style="color:' + onBg + '">' + esc(s.name) + '</div><div class="tartist" style="color:' + onBgMuted + '">' + esc(s.artist) + '</div></div>' + prevBtn + link + '</div>';
+  }).join('');
+
+  var songsJson = JSON.stringify(S.songs.map(function(s) { return { name: s.name, artist: s.artist, art: safeHttpsUrl(s.art), previewUrl: safeHttpsUrl(s.previewUrl) }; })).replace(/</g, '\\u003c');
+  var frontSvg = cSVG(S.theme, 400, getSongLine());
+  var backSvg = cBackSVG(S.theme, 400);
+
+  var html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>'
+    + '<title>' + esc(headline) + '</title>'
+    + '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet"/>'
+    + '<style>'
+    + '*{box-sizing:border-box;margin:0;padding:0}'
+    + 'body{background:' + t.bg + ';min-height:100vh;font-family:"DM Sans",sans-serif;padding:32px 16px 80px;display:flex;flex-direction:column;align-items:center}'
+    + 'body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(circle,' + dotColor + ' 2px,transparent 2px);background-size:40px 40px;pointer-events:none}'
+    + '.wrap{width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center;gap:20px;position:relative;z-index:1}'
+    + 'h1{font-family:"Caveat",cursive;font-size:2.5rem;font-weight:700;color:' + h1Color + ';text-align:center;text-shadow:0 1px 6px rgba(0,0,0,0.15)}'
+    + '.note-card{background:' + noteBg + ';border-radius:4px 14px 14px 4px;padding:18px 18px 14px 48px;width:100%;position:relative;box-shadow:0 4px 20px rgba(0,0,0,0.12);border-left:6px solid ' + noteBdr + '}'
+    + '.note-card::before{content:"";position:absolute;left:40px;top:0;bottom:0;width:1.5px;background:rgba(220,70,70,0.2)}'
+    + '.note-card::after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(to bottom,transparent,transparent 29px,rgba(90,140,230,0.1) 29px,rgba(90,140,230,0.1) 30px);pointer-events:none}'
+    + '.note-holes{position:absolute;left:-3px;top:14px;display:flex;flex-direction:column;gap:26px}'
+    + '.nhole{width:13px;height:13px;border-radius:50%;background:' + (bright<100?'rgba(255,255,255,0.15)':'#e8e2d4') + ';border:1.5px solid ' + (bright<100?'rgba(255,255,255,0.1)':'rgba(0,0,0,0.1)') + '}'
+    + '.note-text{font-family:"Caveat",cursive;font-size:1.12rem;line-height:30px;word-break:break-word;position:relative;z-index:1}'
+    + '.note-text ul{margin-left:1.2em;list-style:disc}.note-text ol{margin-left:1.2em;list-style:decimal}'
+    + '.cass-row{display:flex;gap:12px;width:100%;align-items:flex-start}'
+    + '.cass-side{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}'
+    + '.cass-side svg{width:100%;height:auto;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.25))}'
+    + '.tracklist{border-radius:12px;padding:12px 14px;width:100%}'
+    + '.track{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed ' + (bright<100?'rgba(255,255,255,0.1)':'rgba(0,0,0,0.09)') + '}'
+    + '.track:last-child{border-bottom:none}'
+    + '.tart{width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0}'
+    + '.tart-empty{width:40px;height:40px;border-radius:6px;background:' + (bright<100?'rgba(255,255,255,0.1)':'#eee') + ';flex-shrink:0}'
+    + '.tinfo{flex:1;min-width:0}'
+    + '.tname{font-weight:600;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+    + '.tartist{font-size:.72rem}'
+    + '.tplay{width:32px;height:32px;border-radius:50%;border:2px solid;background:transparent;font-size:.7rem;cursor:pointer;flex-shrink:0;transition:all .2s}'
+    + '.tplay:hover,.tplay.playing{background:#1DB954;border-color:#1DB954;color:#fff}'
+    + '.tlink{font-size:1rem;text-decoration:none;flex-shrink:0}'
+    + '.player-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.96);padding:10px 20px;display:flex;align-items:center;gap:12px;backdrop-filter:blur(10px);transform:translateY(100%);transition:transform .3s;z-index:100}'
+    + '.player-bar.on{transform:translateY(0)}'
+    + '.pbart{width:36px;height:36px;border-radius:6px;object-fit:cover;background:#333;flex-shrink:0}'
+    + '.pbinfo{flex:1;min-width:0}'
+    + '.pbname{color:#fff;font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+    + '.pbartist{color:#aaa;font-size:.7rem}'
+    + '.pb-note{color:#888;font-size:.62rem;flex-shrink:0}'
+    + '.clabel{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;text-align:center;margin-top:5px;color:' + onBgMuted + '}'
+    + '.tl-head{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;color:' + onBgMuted + '}'
+    + '.footer{font-size:.75rem;text-align:center;color:' + onBgMuted + ';margin-top:8px}'
+    + '</style></head><body>'
+    + '<div class="wrap">'
+    + '<h1>' + esc(headline) + '</h1>'
+    + '<div class="note-card">'
+    + '<div class="note-holes"><div class="nhole"></div><div class="nhole"></div><div class="nhole"></div></div>'
+    + '<div class="note-text" style="color:' + noteText + '">' + noteContentHtml + '</div>'
+    + '</div>'
+    + '<div class="cass-row">'
+    + '<div class="cass-side">' + frontSvg + '<div class="clabel">front</div></div>'
+    + '<div class="cass-side">' + backSvg + '<div class="clabel">back</div></div>'
+    + '</div>'
+    + (S.songs.length ? '<div class="tracklist" style="background:' + trackBg + '"><div class="tl-head">tracklist &middot; tap play to preview</div>' + tracksHtml + '</div>' : '')
+    + '<div class="footer">made with love &middot; mixtape for you</div>'
+    + '</div>'
+    + '<div class="player-bar" id="bar"><img class="pbart" id="pbArt" src="" alt=""/><div class="pbinfo"><div class="pbname" id="pbName"></div><div class="pbartist" id="pbArt2"></div></div><div class="pb-note">30s preview</div></div>'
+    + '<scr' + 'ipt>'
+    + 'var cur=null,curBtn=null,songs=' + songsJson + ';'
+    + 'function tp(i){'
+    + 'var a=document.getElementById("pa"+i),btn=document.getElementById("pb"+i),bar=document.getElementById("bar");'
+    + 'if(!a)return;'
+    + 'if(cur&&cur!==a){cur.pause();cur.currentTime=0;if(curBtn){curBtn.textContent="\u25B6";curBtn.classList.remove("playing");}}'
+    + 'if(a.paused){'
+    + 'a.play();btn.textContent="\u23F8";btn.classList.add("playing");cur=a;curBtn=btn;bar.classList.add("on");'
+    + 'document.getElementById("pbName").textContent=songs[i].name;'
+    + 'document.getElementById("pbArt2").textContent=songs[i].artist;'
+    + 'document.getElementById("pbArt").src=songs[i].art||"";'
+    + 'a.onended=function(){btn.textContent="\u25B6";btn.classList.remove("playing");bar.classList.remove("on");cur=null;curBtn=null;};'
+    + '}else{a.pause();btn.textContent="\u25B6";btn.classList.remove("playing");bar.classList.remove("on");cur=null;curBtn=null;}'
+    + '}'
+    + '</' + 'script>'
+    + '</body></html>';
+
+  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  var a = document.createElement('a');
+  a.download = 'mixtape-for-you.html';
+  a.href = URL.createObjectURL(blob);
+  a.click();
+  setTimeout(function() { URL.revokeObjectURL(a.href); }, 5000);
+}
+
+function startOver() {
+  S = { theme: 0, stickers: [], songs: [], note: '', noteHtml: '', noteColor: '#000000', recipient: '' };
+  stickerObjs = []; selIdx = -1; sCtx = null; sCassImg = null;
+  document.body.style.background = THEMES[0].bg;
+  syncLogoColor();
+  var noteEl = document.getElementById('noteInput');
+  noteEl.innerHTML = '';
+  noteEl.style.color = '#000000';
+  var picker = document.querySelector('.ntool-color');
+  if (picker) picker.value = '#000000';
+  document.getElementById('recipInput').value = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('sresults').innerHTML = '';
+  document.getElementById('nc').textContent = '0';
+  updateAdded();
+  goStep(1);
+  buildSwatches();
+  renderAllCW();
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+buildSwatches();
+renderAllCW();
+</script>
+</body>
+</html>
